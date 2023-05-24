@@ -7,5 +7,6 @@ import (
 )
 
 func TestPaths(t *testing.T) {
-	assert.Equal(t, "/items/:itemID", pathGetItem)
+	assert.Equal(t, "/items/:itemID", pathGetItem) //verifica si el valor de pathGetItem
+	                                               // es igual a "/items/:itemID".
 }

@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"go-api/services"
-	"go-api/services/clients"
-	"net/http"
+	"go-api/services" //contiene los servicios
+	"go-api/services/clients" //contiene los clientes utilizados
+	"net/http" //para trabajar con HTTP
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -15,28 +15,28 @@ const (
 )
 
 func init() {
-	// Here we define that for the real application we will use HTTPClient as MLClient
+	// Aquí definimos que para la aplicación real utilizaremos HTTPClient como MLClient
 	services.MLClient = clients.HTTPClient{}
 }
 
 func GetItem(ctx *gin.Context) {
-	// Get id param from URL as string
+	// Obtiene el parámetro de id de la URL como una cadena
 	idString := ctx.Param(paramItemID)
 
-	// Convert string ID to int ID
+	// Convierte el ID de tipo cadena a un ID de tipo entero
 	id, err := strconv.ParseInt(idString, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, fmt.Errorf("error parsing item ID: %w", err))
 		return
 	}
 
-	// Call the service with int ID
+	// Llama al servicio con el ID de tipo entero
 	item, err := services.GetItem(id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, fmt.Errorf("error getting item: %w", err))
 		return
 	}
 
-	// Successful case
+	// Caso exitoso
 	ctx.JSON(http.StatusOK, item)
 }
