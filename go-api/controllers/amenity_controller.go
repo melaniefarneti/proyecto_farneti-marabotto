@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"fmt"
 	"go-api/services"
@@ -33,4 +34,4 @@ func GetAmenity(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, amenity)
-}
+}*/

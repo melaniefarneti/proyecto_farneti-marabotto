@@ -1,32 +1,39 @@
 package services
 
 import (
-	"errors"
 	"go-api/domain"
-
-	"gorm.io/gorm"
+	"go-api/services/clients"
 )
 
-// GetHotelByID obtiene los datos de un hotel por su ID
-func GetHotelByID(id int) (*domain.Hotel, error) {
-	// Implementar la lógica para obtener los datos del hotel por su ID
+var (
+	MLClient clients.MLClient
+)
 
-	// Realiza la consulta a la base de datos para obtener el hotel por su ID utilizando tu sistema de almacenamiento correspondiente
-	// Por ejemplo, si estás utilizando GORM como ORM, podrías hacer algo como esto:
-	var hotel domain.Hotel
-	if err := database.DB.First(&hotel, id).Error; err != nil {
-		// Ocurrió un error al obtener el hotel de la base de datos
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			// Si el hotel no existe, retornar nil en lugar de un error
-			return nil, nil
-		}
+func GetHotels() ([]domain.Hotel, error) {
+	// Llama al cliente de ML para obtener los hoteles
+	mlHotels, err := MLClient.GetHotels()
+	if err != nil {
 		return nil, err
 	}
 
-	// Retorna el hotel encontrado
-	return &hotel, nil
+	// Convierte los hoteles de ML en hoteles de dominio
+	hotels := make([]domain.Hotel, len(mlHotels))
+	for i, mlHotel := range mlHotels {
+		hotels[i] = buildHotel(mlHotel)
+	}
+
+	return hotels, nil
 }
 
+func buildHotel(mlHotel clients.MLHotel) domain.Hotel {
+	return domain.Hotel{
+		ID:   mlHotel.ID,
+		Name: mlHotel.Name,
+		// Agrega aquí los demás campos que necesites
+	}
+}
+
+/*
 // CreateHotel crea un nuevo hotel
 func CreateHotel(newHotel domain.Hotel) (domain.Hotel, error) {
 	// Realiza la validación de los datos del nuevo hotel según tus requisitos
@@ -132,3 +139,4 @@ func DeleteHotel(id int) error {
 	// La eliminación del hotel se realizó correctamente
 	return nil
 }
+*/

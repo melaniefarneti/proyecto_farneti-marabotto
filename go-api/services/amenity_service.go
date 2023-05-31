@@ -1,5 +1,6 @@
 package services
 
+/*
 import (
 	"errors"
 	"go-api/domain"
@@ -16,6 +17,7 @@ func GetAmenityByID(id int) (domain.Amenity, error) {
 	}
 	return domain.Amenity{}, domain.ErrAmenityNotFound
 }
+
 
 // CreateAmenity crea una nueva amenidad
 func CreateAmenity(amenity domain.Amenity) (domain.Amenity, error) {
@@ -59,3 +61,4 @@ func generateAmenityID() int {
 	// incrementando un contador
 	return len(amenities) + 1
 }
+*/

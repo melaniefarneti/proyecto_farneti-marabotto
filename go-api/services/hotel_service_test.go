@@ -1,13 +1,46 @@
 package services
 
 import (
+	"go-api/domain"
+	"go-api/services/clients"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"go-api/domain"
-	"go-api/services"
 )
 
+func TestbuildHotel(t *testing.T) {
+	// Preparación
+	mlHotel := clients.MLHotel{
+		ID:   1,
+		Name: "Hotel A",
+	}
+
+	// Ejecución
+	hotel := buildHotel(mlHotel)
+
+	// Verificación
+	expectedHotel := domain.Hotel{
+		ID:   mlHotel.ID,
+		Name: mlHotel.Name,
+	}
+
+	assert.Equal(t, expectedHotel, hotel)
+}
+
+func TestGetHotels(t *testing.T) {
+	// Llama a la función GetHotels del servicio
+	hotels, err := GetHotels()
+
+	// Verifica los resultados esperados y el error
+	assert.NoError(t, err)
+	assert.NotNil(t, hotels)
+	assert.Equal(t, 3, len(hotels))
+	assert.Equal(t, "Hotel A", hotels[0].Name)
+	assert.Equal(t, "Hotel B", hotels[1].Name)
+	assert.Equal(t, "Hotel C", hotels[2].Name)
+}
+
+/*
 // TestGetHotelByID testea la función GetHotelByID
 func TestGetHotelByID(t *testing.T) {
 	// Crear un hotel de prueba en la base de datos para obtener su ID
@@ -93,4 +126,4 @@ func TestDeleteHotel(t *testing.T) {
 	// Verificar que el hotel haya sido eliminado
 	_, err = services.GetHotelByID(createdHotel.ID)
 	assert.NotNil(t, err)
-}
+}*/
