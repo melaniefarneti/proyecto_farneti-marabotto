@@ -1,37 +1,46 @@
 package controllers
 
 import (
-	"fmt"
 	"go-api/services"
-	"go-api/services/clients"
+	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 
+	_ "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	_ "gorm.io/gorm"
 )
 
-const (
-	paramReservationID = "reservationID"
-)
+func CreateReservation(ctx *gin.Context) {
+	// Obtener el token del encabezado de autorización
+	token := ctx.GetHeader("Authorization")
 
-func init() {
-	services.MLClient = clients.HTTPClient{}
-}
-
-func GetReservation(ctx *gin.Context) {
-	idString := ctx.Param(paramReservationID)
-	id, err := strconv.ParseInt(idString, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, fmt.Errorf("error parsing reservation ID: %w", err))
+	// Validar el token
+	if !isValidToken(token) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 		return
 	}
 
-	reservation, err := services.GetReservation(id)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, fmt.Errorf("error getting reservation: %w", err))
+	// Obtener los demás parámetros del hotel, fechas de entrada y salida del cuerpo de la solicitud
+	var request struct {
+		HotelID  int    `json:"hotel_id"`
+		Checkin  string `json:"checkin"`
+		Checkout string `json:"checkout"`
+	}
+
+	if err := ctx.BindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, reservation)
-}
+	// Obtener la instancia de la base de datos desde el contexto
+	db := ctx.MustGet("db").(*gorm.DB)
 
+	// Llamar al servicio para crear la reserva
+	err := services.CreateReservation(db, request.HotelID, request.Checkin, request.Checkout)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "error creating reservation"})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"message": "reservation created"})
+}

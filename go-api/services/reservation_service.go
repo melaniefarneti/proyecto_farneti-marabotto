@@ -2,11 +2,133 @@ package services
 
 import (
 	"errors"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"go-api/domain"
+	"gorm.io/gorm"
+	"time"
 )
 
-var reservations []domain.Reservation
+func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token string, clientName string) error {
+	// Validar el token
+	if !isValidToken(token) {
+		return errors.New("invalid token")
+	}
 
+	// Validar la disponibilidad de habitaciones del hotel para las fechas especificadas
+	availableRooms, err := calculateAvailableRooms(hotelID, checkin, checkout)
+	if err != nil {
+		return err
+	}
+
+	// Verificar si hay suficientes habitaciones disponibles
+	if availableRooms <= 0 {
+		return errors.New("no available rooms for the specified dates")
+	}
+
+	// Parsea las fechas de check-in y check-out
+	checkInDate, err := time.Parse("2006-01-02", checkin)
+	if err != nil {
+		return fmt.Errorf("error parsing check-in date: %w", err)
+	}
+
+	checkOutDate, err := time.Parse("2006-01-02", checkout)
+	if err != nil {
+		return fmt.Errorf("error parsing check-out date: %w", err)
+	}
+
+	// Crea una nueva instancia de la reserva
+	reservation := domain.Reservation{
+		HotelID:    hotelID,
+		CheckIn:    checkInDate.Format("2006-01-02"),
+		CheckOut:   checkOutDate.Format("2006-01-02"),
+		ClientName: clientName,
+	}
+
+	// Realiza las operaciones necesarias para almacenar la reserva en la base de datos
+	if err := db.Create(&reservation).Error; err != nil {
+		return fmt.Errorf("error creating reservation: %w", err)
+	}
+
+	return nil
+}
+
+func isValidToken(tokenString string) bool {
+	// Paso 1: Define la estructura de la clave secreta
+	var secretKey = []byte("mi-clave-secreta")
+
+	// Paso 2: Parsea y valida el token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Verifica el método de firma
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// Devuelve la clave secreta para validar la firma del token
+		return secretKey, nil
+	})
+
+	// Paso 3: Verifica si hubo algún error durante el parsing o la validación del token
+	if err != nil {
+		return false
+	}
+
+	// Paso 4: Verifica si el token es válido
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return true
+	}
+
+	return false
+}
+
+func calculateAvailableRooms(hotelID int, checkin string, checkout string) (int, error) {
+	// Obtener la cantidad total de habitaciones del hotel
+	totalRooms, err := getTotalRoomsFromDB(hotelID)
+	if err != nil {
+		return 0, err
+	}
+
+	// Obtener la cantidad de habitaciones reservadas para el rango de fechas dado
+	reservedRooms, err := getReservedRoomsFromDB(hotelID, checkin, checkout)
+	if err != nil {
+		return 0, err
+	}
+
+	// Calcular la cantidad de habitaciones disponibles
+	availableRooms := totalRooms - reservedRooms
+
+	if availableRooms < 0 {
+		// Si la cantidad de habitaciones disponibles es negativa, lanzar un error
+		return 0, errors.New("no hay habitaciones disponibles para el rango de fechas especificado")
+	}
+
+	return availableRooms, nil
+}
+
+func getTotalRoomsFromDB(db *gorm.DB, hotelID int) (int, error) {
+	var hotel domain.Hotel
+	err := db.Model(&domain.Hotel{}).Where("id = ?", hotelID).First(&hotel).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return hotel.Rooms, nil
+}
+
+func getReservedRoomsFromDB(db *gorm.DB, hotelID int, checkin string, checkout string) (int, error) {
+	var count int
+	err := db.Model(&domain.Reservation{}).
+		Where("hotel_id = ?", hotelID).
+		Where("checkin >= ? AND checkout <= ?", checkin, checkout).
+		Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+/*
 // GetReservationByID obtiene los datos de una reserva por su ID
 func GetReservationByID(id int) (domain.Reservation, error) {
 	for _, reservation := range reservations {
@@ -119,4 +241,4 @@ func generateReservationID() int {
 	// Implementar la lógica para generar un ID único para la reserva, por ejemplo, incrementando un contador o utilizando un generador de IDs único
 	// generamos un ID incrementando un contador
 	return len(reservations) + 1
-}
+}*/
