@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token string, clientName string) error {
+func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, ge) error {
 	// Validar el token
 	if !isValidToken(token) {
 		return errors.New("invalid token")
