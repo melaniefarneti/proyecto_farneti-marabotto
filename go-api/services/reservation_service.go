@@ -3,20 +3,22 @@ package services
 import (
 	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"go-api/domain"
-	"gorm.io/gorm"
+	"strconv"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"gorm.io/gorm"
 )
 
-func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, ge) error {
+func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token, clientName string) error {
 	// Validar el token
 	if !isValidToken(token) {
 		return errors.New("invalid token")
 	}
 
 	// Validar la disponibilidad de habitaciones del hotel para las fechas especificadas
-	availableRooms, err := calculateAvailableRooms(hotelID, checkin, checkout)
+	availableRooms, err := calculateAvailableRooms(db, hotelID, checkin, checkout)
 	if err != nil {
 		return err
 	}
@@ -81,15 +83,15 @@ func isValidToken(tokenString string) bool {
 	return false
 }
 
-func calculateAvailableRooms(hotelID int, checkin string, checkout string) (int, error) {
+func calculateAvailableRooms(db *gorm.DB, hotelID int, checkin string, checkout string) (int, error) {
 	// Obtener la cantidad total de habitaciones del hotel
-	totalRooms, err := getTotalRoomsFromDB(hotelID)
+	totalRooms, err := getTotalRoomsFromDB(db, hotelID)
 	if err != nil {
 		return 0, err
 	}
 
 	// Obtener la cantidad de habitaciones reservadas para el rango de fechas dado
-	reservedRooms, err := getReservedRoomsFromDB(hotelID, checkin, checkout)
+	reservedRooms, err := getReservedRoomsFromDB(db, hotelID, checkin, checkout)
 	if err != nil {
 		return 0, err
 	}
@@ -98,8 +100,7 @@ func calculateAvailableRooms(hotelID int, checkin string, checkout string) (int,
 	availableRooms := totalRooms - reservedRooms
 
 	if availableRooms < 0 {
-		// Si la cantidad de habitaciones disponibles es negativa, lanzar un error
-		return 0, errors.New("no hay habitaciones disponibles para el rango de fechas especificado")
+		return 0, errors.New("no available rooms for the specified dates")
 	}
 
 	return availableRooms, nil
@@ -112,11 +113,16 @@ func getTotalRoomsFromDB(db *gorm.DB, hotelID int) (int, error) {
 		return 0, err
 	}
 
-	return hotel.Rooms, nil
+	rooms, err := strconv.Atoi(hotel.Rooms)
+	if err != nil {
+		return 0, fmt.Errorf("error converting rooms to int: %w", err)
+	}
+
+	return rooms, nil
 }
 
 func getReservedRoomsFromDB(db *gorm.DB, hotelID int, checkin string, checkout string) (int, error) {
-	var count int
+	var count int64
 	err := db.Model(&domain.Reservation{}).
 		Where("hotel_id = ?", hotelID).
 		Where("checkin >= ? AND checkout <= ?", checkin, checkout).
@@ -125,7 +131,7 @@ func getReservedRoomsFromDB(db *gorm.DB, hotelID int, checkin string, checkout s
 		return 0, err
 	}
 
-	return count, nil
+	return int(count), nil
 }
 
 /*

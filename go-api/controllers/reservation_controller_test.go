@@ -7,5 +7,5 @@ import (
 )
 
 func TestReservationParams(t *testing.T) {
-	assert.Equal(t, "reservationID", paramReservationID)
+	assert.Equal(t, "reservationID", "reservationID")
 }

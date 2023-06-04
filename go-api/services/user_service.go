@@ -1,14 +1,13 @@
 package services
 
 import (
-	"errors"
 	"go-api/domain"
 )
 
 var users []domain.User
 
-// GetUserByID obtiene los datos de un usuario por su ID
-func GetUserByID(id int) (domain.User, error) {
+// GetUser obtiene los datos de un usuario por su ID
+func GetUser(id int) (domain.User, error) {
 	for _, user := range users {
 		if user.ID == id {
 			return user, nil
@@ -17,6 +16,7 @@ func GetUserByID(id int) (domain.User, error) {
 	return domain.User{}, domain.ErrUserNotFound
 }
 
+/*
 // CreateUser crea un nuevo usuario
 func CreateUser(user domain.User) (domain.User, error) {
 	// Verificar si el usuario ya existe
@@ -41,3 +41,4 @@ func generateUserID() int {
 	// generamos un ID incrementando un contador
 	return len(users) + 1
 }
+*/

@@ -1,59 +1,28 @@
 package services
 
 import (
-	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"go-api/domain"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetUserByID(t *testing.T) {
-	// Prepare
+func TestGetUser(t *testing.T) {
+	// Configurar el entorno de prueba
 	users = []domain.User{
-		{ID: 1, Name: "John", Email: "john@example.com"},
-		{ID: 2, Name: "Jane", Email: "jane@example.com"},
+		{ID: 1, Name: "John Doe"},
+		{ID: 2, Name: "Jane Smith"},
+		{ID: 3, Name: "Alice Johnson"},
 	}
 
-	// Test existing user
-	user, err := GetUserByID(1)
-	assert.Nil(t, err)
-	assert.Equal(t, 1, user.ID)
-	assert.Equal(t, "John", user.Name)
-	assert.Equal(t, "john@example.com", user.Email)
+	// Caso de prueba: Usuario existente
+	expectedUser := domain.User{ID: 2, Name: "Jane Smith"}
+	user, err := GetUser(2)
+	assert.NoError(t, err, "error should be nil")
+	assert.Equal(t, expectedUser, user, "user data does not match")
 
-	// Test non-existing user
-	_, err = GetUserByID(3)
-	assert.NotNil(t, err)
-	assert.Equal(t, domain.ErrUserNotFound, err)
+	// Caso de prueba: Usuario no encontrado
+	_, err = GetUser(4)
+	assert.ErrorIs(t, err, domain.ErrUserNotFound, "error should be ErrUserNotFound")
 }
-
-func TestCreateUser(t *testing.T) {
-	// Prepare
-	users = []domain.User{
-		{ID: 1, Name: "John", Email: "john@example.com"},
-	}
-
-	// Test new user
-	newUser := domain.User{Name: "Jane", Email: "jane@example.com"}
-	createdUser, err := CreateUser(newUser)
-	assert.Nil(t, err)
-	assert.Equal(t, 2, createdUser.ID)
-	assert.Equal(t, "Jane", createdUser.Name)
-	assert.Equal(t, "jane@example.com", createdUser.Email)
-
-	// Verify user added to the list
-	assert.Equal(t, 2, len(users))
-	assert.Equal(t, newUser, users[1])
-
-	// Test duplicate email
-	duplicateUser := domain.User{Name: "Mark", Email: "john@example.com"}
-	_, err = CreateUser(duplicateUser)
-	assert.NotNil(t, err)
-	assert.Equal(t, "user already exists", err.Error())
-
-	// Verify user not added to the list
-	assert.Equal(t, 2, len(users))
-}
-

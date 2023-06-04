@@ -26,7 +26,7 @@ func GetUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := services.GetUser(id)
+	user, err := services.GetUser(int(id)) // Convertir id de int64 a int
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, fmt.Errorf("error getting user: %w", err))
 		return

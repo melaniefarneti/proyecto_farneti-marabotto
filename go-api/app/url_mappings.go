@@ -7,13 +7,26 @@ import (
 )
 
 const (
-	pathGetItem = "/items/:itemID" //RUTA PARA OBTENER EL ITEM. DEBERIAMOS CAMBIARLO
+	pathGetHotel          = "/hotels/:hotelID"
+	pathCreateReservation = "/reservations"
+	//pathGetAmenity     = "/amenities/:amenityID"
+	pathGetUser = "/users/:userID"
 )
 
-/* Cuando se realiza una solicitud GET a la ruta especificada,
-el controlador GetItem del paquete "go-api/controllers"
-se ejecutará para manejar la solicitud.*/
-
+// mapRoutes mapea las rutas de la aplicación
 func mapRoutes(router *gin.Engine) {
-	router.GET(pathGetItem, controllers.GetItem)
+	router.GET(pathGetHotel, controllers.GetHotels)
+	router.POST(pathCreateReservation, controllers.CreateReservation)
+	//router.GET(pathGetAmenity, controllers.GetAmenity)
+	router.GET(pathGetUser, controllers.GetUser)
+}
+
+// SetupRoutes configura y mapea las rutas de la aplicación
+func SetupRoutes() *gin.Engine {
+	router := gin.Default()
+
+	// Mapear las rutas
+	mapRoutes(router)
+
+	return router
 }
