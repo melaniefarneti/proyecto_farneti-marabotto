@@ -9,5 +9,5 @@ type Hotel struct {
 	Photo       string `gorm:"type:varchar(255);column:foto"`
 	Description string `gorm:"type:varchar(1000);column:descripcion"`
 	Location    string `gorm:"type:varchar(50);column:ubicacion"`
-	Rooms       string `gorm:"type:varchar(255);column:cuartos"`
+	Rooms       int    `gorm:"type:int;column:cuartos"`
 }

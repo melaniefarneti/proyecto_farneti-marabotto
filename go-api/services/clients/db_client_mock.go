@@ -20,7 +20,7 @@ func (DBClientMock) GetHotelByID(hotelID int) (dao.Hotel, error) {
 		Photo:       "Test Photo.jpg",
 		Description: "Test Description",
 		Location:    "Test Location",
-		Rooms:       "10",
+		Rooms:       10,
 	}, nil
 }
 

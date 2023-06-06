@@ -7,7 +7,9 @@ import (
 )
 
 const (
-	pathGetHotel          = "/hotels/:hotelID"
+	pahtGetHotels = "/hotels/all"
+	//pathGetHotel          = "/hotels/:hotelID"
+
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
 	pathGetUser = "/users/:userID"
@@ -15,7 +17,8 @@ const (
 
 // mapRoutes mapea las rutas de la aplicación
 func mapRoutes(router *gin.Engine) {
-	router.GET(pathGetHotel, controllers.GetHotels)
+	router.GET(pahtGetHotels, controllers.GetHotels)
+	//router.GET(pathGetHotel, controllers.GetHotels)
 	router.POST(pathCreateReservation, controllers.CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
 	router.GET(pathGetUser, controllers.GetUser)

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go-api/dao"
 	"go-api/services/clients"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -120,7 +119,7 @@ func (s ReservationService) getTotalRoomsFromDB(hotelID int) (int, error) {
 		return 0, err
 	}
 
-	rooms, err := strconv.Atoi(hotel.Rooms)
+	rooms := hotel.Rooms
 	if err != nil {
 		return 0, fmt.Errorf("error converting rooms to int: %w", err)
 	}
