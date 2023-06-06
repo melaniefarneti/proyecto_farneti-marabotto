@@ -1,6 +1,7 @@
 package services
 
 import (
+	"go-api/services/clients"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,15 +57,18 @@ func (m *MockDB) Find(dest interface{}, conds ...interface{}) *gorm.DB {
 
 func TestCreateReservation(t *testing.T) {
 	// Configurar el entorno de prueba
-	db := &MockDB{}
 	token := "valid-token"
 	hotelID := 1
 	checkin := "2023-06-01"
 	checkout := "2023-06-03"
 	clientName := "John Doe"
 
+	service := ReservationService{
+		DBClient: clients.DBClientMock{},
+	}
+
 	// Ejecutar la función a probar
-	err := CreateReservation(db, hotelID, checkin, checkout, token, clientName)
+	err := service.CreateReservation(hotelID, checkin, checkout, token, clientName)
 
 	// Verificar el resultado esperado
 	assert.NoError(t, err, "error creating reservation should be nil")
@@ -72,13 +76,15 @@ func TestCreateReservation(t *testing.T) {
 
 func TestCalculateAvailableRooms(t *testing.T) {
 	// Configurar el entorno de prueba
-	db := &MockDB{}
 	hotelID := 1
 	checkin := "2023-06-01"
 	checkout := "2023-06-03"
 
 	// Ejecutar la función a probar
-	availableRooms, err := calculateAvailableRooms(db, hotelID, checkin, checkout)
+	service := ReservationService{
+		DBClient: clients.DBClientMock{},
+	}
+	availableRooms, err := service.calculateAvailableRooms(hotelID, checkin, checkout)
 
 	// Verificar el resultado esperado
 	assert.NoError(t, err, "error calculating available rooms should be nil")
@@ -87,28 +93,15 @@ func TestCalculateAvailableRooms(t *testing.T) {
 
 func TestGetTotalRoomsFromDB(t *testing.T) {
 	// Configurar el entorno de prueba
-	db := &MockDB{}
 	hotelID := 1
 
 	// Ejecutar la función a probar
-	totalRooms, err := getTotalRoomsFromDB(db, hotelID)
+	service := ReservationService{
+		DBClient: clients.DBClientMock{},
+	}
+	totalRooms, err := service.getTotalRoomsFromDB(hotelID)
 
 	// Verificar el resultado esperado
 	assert.NoError(t, err, "error getting total rooms should be nil")
 	assert.Equal(t, 5, totalRooms, "total rooms should be 5")
-}
-
-func TestGetReservedRoomsFromDB(t *testing.T) {
-	// Configurar el entorno de prueba
-	db := &MockDB{}
-	hotelID := 1
-	checkin := "2023-06-01"
-	checkout := "2023-06-03"
-
-	// Ejecutar la función a probar
-	reservedRooms, err := getReservedRoomsFromDB(db, hotelID, checkin, checkout)
-
-	// Verificar el resultado esperado
-	assert.NoError(t, err, "error getting reserved rooms should be nil")
-	assert.Equal(t, 5, reservedRooms, "reserved rooms should be 5")
 }

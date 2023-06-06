@@ -1,19 +1,19 @@
 package services
 
 import (
-	"go-api/domain"
+	"go-api/dao"
 )
 
-var users []domain.User
+var users []dao.User
 
 // GetUser obtiene los datos de un usuario por su ID
-func GetUser(id int) (domain.User, error) {
+func GetUser(id int) (dao.User, error) {
 	for _, user := range users {
 		if user.ID == id {
 			return user, nil
 		}
 	}
-	return domain.User{}, domain.ErrUserNotFound
+	return dao.User{}, dao.ErrUserNotFound
 }
 
 /*

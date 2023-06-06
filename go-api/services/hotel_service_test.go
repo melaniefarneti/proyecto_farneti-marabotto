@@ -1,7 +1,7 @@
 package services
 
 import (
-	"go-api/domain"
+	"go-api/dao"
 	"go-api/services/clients"
 	"testing"
 
@@ -19,7 +19,7 @@ func TestbuildHotel(t *testing.T) {
 	hotel := buildHotel(mlHotel)
 
 	// Verificación
-	expectedHotel := domain.Hotel{
+	expectedHotel := dao.Hotel{
 		ID:   mlHotel.ID,
 		Name: mlHotel.Name,
 	}

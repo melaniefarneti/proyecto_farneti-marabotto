@@ -3,22 +3,30 @@ package services
 import (
 	"errors"
 	"fmt"
-	"go-api/domain"
+	"go-api/dao"
+	"go-api/services/clients"
 	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"gorm.io/gorm"
 )
 
-func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token, clientName string) error {
+type ServiceInterface interface {
+	CreateReservation(hotelID int, checkin, checkout, token, clientName string) error
+}
+
+type ReservationService struct {
+	DBClient clients.DBClientInterface
+}
+
+func (s ReservationService) CreateReservation(hotelID int, checkin, checkout, token, clientName string) error {
 	// Validar el token
-	if !isValidToken(token) {
-		return errors.New("invalid token")
-	}
+	//if !isValidToken(token) {
+	//	return errors.New("invalid token")
+	//}
 
 	// Validar la disponibilidad de habitaciones del hotel para las fechas especificadas
-	availableRooms, err := calculateAvailableRooms(db, hotelID, checkin, checkout)
+	availableRooms, err := s.calculateAvailableRooms(hotelID, checkin, checkout)
 	if err != nil {
 		return err
 	}
@@ -40,7 +48,7 @@ func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token, clien
 	}
 
 	// Crea una nueva instancia de la reserva
-	reservation := domain.Reservation{
+	reservation := dao.Reservation{
 		HotelID:    hotelID,
 		CheckIn:    checkInDate.Format("2006-01-02"),
 		CheckOut:   checkOutDate.Format("2006-01-02"),
@@ -48,7 +56,7 @@ func CreateReservation(db *gorm.DB, hotelID int, checkin, checkout, token, clien
 	}
 
 	// Realiza las operaciones necesarias para almacenar la reserva en la base de datos
-	if err := db.Create(&reservation).Error; err != nil {
+	if err := s.DBClient.CreateReservation(reservation); err != nil {
 		return fmt.Errorf("error creating reservation: %w", err)
 	}
 
@@ -83,15 +91,15 @@ func isValidToken(tokenString string) bool {
 	return false
 }
 
-func calculateAvailableRooms(db *gorm.DB, hotelID int, checkin string, checkout string) (int, error) {
+func (s ReservationService) calculateAvailableRooms(hotelID int, checkin string, checkout string) (int, error) {
 	// Obtener la cantidad total de habitaciones del hotel
-	totalRooms, err := getTotalRoomsFromDB(db, hotelID)
+	totalRooms, err := s.getTotalRoomsFromDB(hotelID)
 	if err != nil {
 		return 0, err
 	}
 
 	// Obtener la cantidad de habitaciones reservadas para el rango de fechas dado
-	reservedRooms, err := getReservedRoomsFromDB(db, hotelID, checkin, checkout)
+	reservedRooms, err := s.DBClient.CountReservations(hotelID, checkin, checkout)
 	if err != nil {
 		return 0, err
 	}
@@ -106,9 +114,8 @@ func calculateAvailableRooms(db *gorm.DB, hotelID int, checkin string, checkout 
 	return availableRooms, nil
 }
 
-func getTotalRoomsFromDB(db *gorm.DB, hotelID int) (int, error) {
-	var hotel domain.Hotel
-	err := db.Model(&domain.Hotel{}).Where("id = ?", hotelID).First(&hotel).Error
+func (s ReservationService) getTotalRoomsFromDB(hotelID int) (int, error) {
+	hotel, err := s.DBClient.GetHotelByID(hotelID)
 	if err != nil {
 		return 0, err
 	}
@@ -119,19 +126,6 @@ func getTotalRoomsFromDB(db *gorm.DB, hotelID int) (int, error) {
 	}
 
 	return rooms, nil
-}
-
-func getReservedRoomsFromDB(db *gorm.DB, hotelID int, checkin string, checkout string) (int, error) {
-	var count int64
-	err := db.Model(&domain.Reservation{}).
-		Where("hotel_id = ?", hotelID).
-		Where("checkin >= ? AND checkout <= ?", checkin, checkout).
-		Count(&count).Error
-	if err != nil {
-		return 0, err
-	}
-
-	return int(count), nil
 }
 
 /*

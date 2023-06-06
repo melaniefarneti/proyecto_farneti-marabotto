@@ -1,9 +1,8 @@
 package domain
 
-type Reservation struct {
-	ID         int    `gorm:"primaryKey"`
-	HotelID    int    `gorm:"column:hotel_id"`
-	CheckIn    string `gorm:"column:fecha_desde"`
-	CheckOut   string `gorm:"column:fecha_hasta"`
-	ClientName string `gorm:"column:cliente_nombre"`
+type ReservationRequest struct {
+	HotelID    int    `json:"hotel_id"`
+	Checkin    string `json:"checkin"`
+	Checkout   string `json:"checkout"`
+	ClientName string `json:"client_name"`
 }

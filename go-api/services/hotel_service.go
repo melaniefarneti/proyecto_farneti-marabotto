@@ -1,7 +1,7 @@
 package services
 
 import (
-	"go-api/domain"
+	"go-api/dao"
 	"go-api/services/clients"
 )
 
@@ -9,7 +9,7 @@ var (
 	MLClient clients.MLClient
 )
 
-func GetHotels() ([]domain.Hotel, error) {
+func GetHotels() ([]dao.Hotel, error) {
 	// Llama al cliente de ML para obtener los hoteles
 	mlHotels, err := MLClient.GetHotels()
 	if err != nil {
@@ -17,7 +17,7 @@ func GetHotels() ([]domain.Hotel, error) {
 	}
 
 	// Convierte los hoteles de ML en hoteles de dominio
-	hotels := make([]domain.Hotel, len(mlHotels))
+	hotels := make([]dao.Hotel, len(mlHotels))
 	for i, mlHotel := range mlHotels {
 		hotels[i] = buildHotel(mlHotel)
 	}
@@ -25,8 +25,8 @@ func GetHotels() ([]domain.Hotel, error) {
 	return hotels, nil
 }
 
-func buildHotel(mlHotel clients.MLHotel) domain.Hotel {
-	return domain.Hotel{
+func buildHotel(mlHotel clients.MLHotel) dao.Hotel {
+	return dao.Hotel{
 		ID:   mlHotel.ID,
 		Name: mlHotel.Name,
 		// Agrega aquí los demás campos que necesites
