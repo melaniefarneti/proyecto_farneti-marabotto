@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"go-api/services"
-	"go-api/services/clients"
 	"net/http"
 	"strconv"
 
@@ -13,10 +12,6 @@ import (
 const (
 	paramUserID = "userID"
 )
-
-func init() {
-	services.MLClient = clients.HTTPClient{}
-}
 
 func GetUser(ctx *gin.Context) {
 	idString := ctx.Param(paramUserID)

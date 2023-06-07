@@ -28,3 +28,26 @@ func (DBClientMock) CountReservations(hotelID int, checkin string, checkout stri
 	fmt.Println(fmt.Sprintf("Counting reservations for hotel: %d", hotelID))
 	return 5, nil
 }
+
+func (DBClientMock) GetHotels() ([]dao.Hotel, error) {
+	fmt.Println("Getting hotels")
+	hotels := []dao.Hotel{
+		{
+			ID:          1,
+			Name:        "Hotel 1",
+			Photo:       "photo1.jpg",
+			Description: "Description 1",
+			Location:    "Location 1",
+			Rooms:       10,
+		},
+		{
+			ID:          2,
+			Name:        "Hotel 2",
+			Photo:       "photo2.jpg",
+			Description: "Description 2",
+			Location:    "Location 2",
+			Rooms:       20,
+		},
+	}
+	return hotels, nil
+}

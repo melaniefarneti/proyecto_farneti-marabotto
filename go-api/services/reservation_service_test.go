@@ -5,55 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
-
-type MockDB struct{}
-
-func (m *MockDB) Create(value interface{}) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Model(value interface{}) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Where(query interface{}, args ...interface{}) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) First(dest interface{}, conds ...interface{}) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Count(count *int64, conds ...interface{}) *gorm.DB {
-	*count = 5 // Valor de ejemplo
-	return nil
-}
-
-func (m *MockDB) Session(dbSession *gorm.Session) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Preload(column string, conditions ...interface{}) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Order(value interface{}, reorder ...bool) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Limit(limit int) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Offset(offset int) *gorm.DB {
-	return nil
-}
-
-func (m *MockDB) Find(dest interface{}, conds ...interface{}) *gorm.DB {
-	return nil
-}
 
 func TestCreateReservation(t *testing.T) {
 	// Configurar el entorno de prueba

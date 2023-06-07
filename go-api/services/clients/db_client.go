@@ -3,15 +3,17 @@ package clients
 import (
 	"fmt"
 	"go-api/dao"
+	"log"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 type DBClientInterface interface {
 	CreateReservation(reservation dao.Reservation) error
 	GetHotelByID(hotelID int) (dao.Hotel, error)
 	CountReservations(hotelID int, checkin string, checkout string) (int, error)
+	GetHotels() ([]dao.Hotel, error)
 }
 
 type DBClient struct {
@@ -85,4 +87,13 @@ func (c DBClient) CountReservations(hotelID int, checkin string, checkout string
 		return 0, err
 	}
 	return int(count), nil
+}
+
+func (c DBClient) GetHotels() ([]dao.Hotel, error) {
+	var hotels []dao.Hotel
+	err := c.DB.Model(&dao.Hotel{}).Find(&hotels).Error
+	if err != nil {
+		return nil, err
+	}
+	return hotels, nil
 }

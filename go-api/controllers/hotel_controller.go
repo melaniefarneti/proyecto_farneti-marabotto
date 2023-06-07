@@ -3,13 +3,15 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"go-api/services"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetHotels(ctx *gin.Context) {
+	var hotelService services.HotelService
 	// Llama al servicio para obtener el listado de hoteles
-	hotels, err := services.GetHotels()
+	hotels, err := hotelService.GetHotels()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "error getting hotels",
