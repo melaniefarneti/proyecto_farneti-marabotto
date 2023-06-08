@@ -14,7 +14,7 @@ type DBClientInterface interface {
 	GetHotelByID(hotelID int) (dao.Hotel, error)
 	CountReservations(hotelID int, checkin string, checkout string) (int, error)
 	GetHotels() ([]dao.Hotel, error)
-	//CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
+	CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
 	//DeleteHotel(hotelID int) error
 }
 
@@ -104,22 +104,9 @@ func (c DBClient) GetHotels() ([]dao.Hotel, error) {
 	return hotels, nil
 }
 
-/*
 func (c DBClient) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
-	result := c.DB.Create(&hotel)
-	if result.Error != nil {
-		return nil, fmt.Errorf("error creating hotel: %w", result.Error)
+	if err := c.DB.Create(hotel).Error; err != nil {
+		return nil, fmt.Errorf("error creating hotel: %w", err)
 	}
 	return hotel, nil
 }
-
-func (c *DBClient) DeleteHotel(hotelID int) error {
-	// Crear una sentencia SQL para eliminar el hotel
-	stmt := c.DB.Exec("DELETE FROM hotels WHERE id = ?", hotelID)
-	if stmt.Error != nil {
-		return stmt.Error
-	}
-
-	return nil
-}
-*/

@@ -56,14 +56,7 @@ func (DBClientMock) GetHotels() ([]dao.Hotel, error) {
 	return hotels, nil
 }
 
-/*
 func (m DBClientMock) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
-	fmt.Println(fmt.Sprintf("Creating hotel: %v", hotel))
+	hotel.ID = 1 // Asignar un ID ficticio para el hotel
 	return hotel, nil
 }
-
-func (m DBClientMock) DeleteHotel(hotelID int) error {
-	m.DeletedIDs = append(m.DeletedIDs, hotelID)
-	return m.DeleteError
-}
-*/

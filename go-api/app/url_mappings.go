@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	pahtGetHotels   = "/hotels/all"
-	//pathCreateHotel = "/hotels"
+	pahtGetHotels   = "/hotels/gethotels"
+	pathCreateHotel = "/hotels/createhotel"
 	//pathDeleteHotel = "/hotels/:hotelID"
 	//pathGetHotel          = "/hotels/:hotelID"
 
@@ -22,7 +22,7 @@ func mapRoutes(router *gin.Engine) {
 	router.GET(pahtGetHotels, func(ctx *gin.Context) {
 		controllers.GetHotels(ctx)
 	})
-	//router.POST(pathCreateHotel, controllers.CreateHotel)
+	router.POST(pathCreateHotel, controllers.CreateHotel)
 	//router.DELETE(pathDeleteHotel, controllers.DeleteHotel)
 	//router.GET(pathGetHotel, controllers.GetHotels)
 	router.POST(pathCreateReservation, controllers.CreateReservation)
