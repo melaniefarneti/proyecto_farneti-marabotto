@@ -14,6 +14,8 @@ type DBClientInterface interface {
 	GetHotelByID(hotelID int) (dao.Hotel, error)
 	CountReservations(hotelID int, checkin string, checkout string) (int, error)
 	GetHotels() ([]dao.Hotel, error)
+	//CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
+	//DeleteHotel(hotelID int) error
 }
 
 type DBClient struct {
@@ -40,21 +42,22 @@ func NewDBClient() DBClient {
 		log.Fatal(err)
 	}
 
-	if err := db.AutoMigrate(&dao.User{}); err != nil {
-		panic(err)
+	err = db.AutoMigrate(&dao.User{}, &dao.Hotel{}, &dao.Reservation{})
+	if err != nil {
+		log.Fatal(err)
 	}
+	/*
+		if err := db.AutoMigrate(&dao.User{}); err != nil {
+			panic(err)
+		}
 
-	if err := db.AutoMigrate(&dao.Amenity{}); err != nil {
-		panic(err)
-	}
+		if err := db.AutoMigrate(&dao.Hotel{}); err != nil {
+			panic(err)
+		}
 
-	if err := db.AutoMigrate(&dao.Hotel{}); err != nil {
-		panic(err)
-	}
-
-	if err := db.AutoMigrate(&dao.Reservation{}); err != nil {
-		panic(err)
-	}
+		if err := db.AutoMigrate(&dao.Reservation{}); err != nil {
+			panic(err)
+		}*/
 
 	return DBClient{
 		DB: db,
@@ -77,11 +80,14 @@ func (c DBClient) GetHotelByID(hotelID int) (dao.Hotel, error) {
 	return hotel, nil
 }
 
+// contar el número de reservas que se superponen con el rango de fechas especificado para un hotel dado
 func (c DBClient) CountReservations(hotelID int, checkin string, checkout string) (int, error) {
 	var count int64
 	err := c.DB.Model(&dao.Reservation{}).
 		Where("hotel_id = ?", hotelID).
-		Where("checkin >= ? AND checkout <= ?", checkin, checkout).
+		Where(c.DB.Where(c.DB.Where("date_from <= ?", checkin).Where("? <= date_to", checkin)).
+			Or(c.DB.Where(c.DB.Where("date_from <= ?", checkout).Where("? <= date_to", checkout))).
+			Or(c.DB.Where(c.DB.Where("? <= date_from", checkin).Where("date_to <= ?", checkout)))).
 		Count(&count).Error
 	if err != nil {
 		return 0, err
@@ -97,3 +103,23 @@ func (c DBClient) GetHotels() ([]dao.Hotel, error) {
 	}
 	return hotels, nil
 }
+
+/*
+func (c DBClient) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
+	result := c.DB.Create(&hotel)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error creating hotel: %w", result.Error)
+	}
+	return hotel, nil
+}
+
+func (c *DBClient) DeleteHotel(hotelID int) error {
+	// Crear una sentencia SQL para eliminar el hotel
+	stmt := c.DB.Exec("DELETE FROM hotels WHERE id = ?", hotelID)
+	if stmt.Error != nil {
+		return stmt.Error
+	}
+
+	return nil
+}
+*/

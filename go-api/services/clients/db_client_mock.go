@@ -5,7 +5,11 @@ import (
 	"go-api/dao"
 )
 
-type DBClientMock struct{}
+type DBClientMock struct {
+	//Hotels      []dao.Hotel
+	//DeletedIDs  []int
+	//DeleteError error
+}
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
 	fmt.Println(fmt.Sprintf("Creating reservation: %v", reservation))
@@ -51,3 +55,15 @@ func (DBClientMock) GetHotels() ([]dao.Hotel, error) {
 	}
 	return hotels, nil
 }
+
+/*
+func (m DBClientMock) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
+	fmt.Println(fmt.Sprintf("Creating hotel: %v", hotel))
+	return hotel, nil
+}
+
+func (m DBClientMock) DeleteHotel(hotelID int) error {
+	m.DeletedIDs = append(m.DeletedIDs, hotelID)
+	return m.DeleteError
+}
+*/

@@ -34,7 +34,7 @@ func CreateReservation(ctx *gin.Context) {
 
 	// Llamar al servicio para crear la reserva
 	service := services.ReservationService{
-		DBClient: dbClient,
+		DBClient: &dbClient,
 	}
 	err := service.CreateReservation(request.HotelID, request.Checkin, request.Checkout, token, request.ClientName)
 	if err != nil {

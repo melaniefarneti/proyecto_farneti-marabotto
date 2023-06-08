@@ -1,7 +1,8 @@
 package app
 
 import (
-	"fmt"                      //para formatear y mostrar mensajes
+	"fmt" //para formatear y mostrar mensajes
+
 	"github.com/gin-gonic/gin" //framework Gin
 )
 
