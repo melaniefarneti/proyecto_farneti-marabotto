@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-api/dao"
 	"go-api/services"
 	"net/http"
 	"strconv"
@@ -43,4 +44,42 @@ func (c *UserController) GetUserByID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, user)
+}
+
+// GetUserByEmail obtiene un usuario por su dirección de correo electrónico
+func (c *UserController) GetUserByEmail(ctx *gin.Context) {
+	email := ctx.Param("email")
+
+	// Llamar al servicio para obtener el usuario por su dirección de correo electrónico
+	user, err := c.UserService.GetUserByEmail(email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error getting user",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
+func (c *UserController) CreateUser(ctx *gin.Context) {
+	// Obtener los datos del usuario del cuerpo de la solicitud
+	var user dao.User
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid user data",
+		})
+		return
+	}
+
+	// Llamar al servicio de usuarios para crear el usuario
+	createdUser, err := c.UserService.CreateUser(&user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error creating user",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, createdUser)
 }

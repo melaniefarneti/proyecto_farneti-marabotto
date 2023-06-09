@@ -6,7 +6,8 @@ import (
 )
 
 type DBClientMock struct {
-	GetUserByIDFunc func(userID int) (*dao.User, error)
+	GetUserByIDFunc    func(userID int) (*dao.User, error)
+	GetUserByEmailFunc func(email string) (*dao.User, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -75,4 +76,15 @@ func (m DBClientMock) GetUserByID(userID int) (*dao.User, error) {
 		return m.GetUserByIDFunc(userID)
 	}
 	return nil, fmt.Errorf("GetUserByIDFunc not implemented")
+}
+
+func (m DBClientMock) GetUserByEmail(email string) (*dao.User, error) {
+	if m.GetUserByEmailFunc != nil {
+		return m.GetUserByEmailFunc(email)
+	}
+	return nil, fmt.Errorf("GetUserByEmailFunc not implemented")
+}
+
+func (m DBClientMock) CreateUser(user *dao.User) (*dao.User, error) {
+	return user, nil
 }

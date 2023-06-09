@@ -16,7 +16,9 @@ const (
 
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
-	pathGetUserByID = "/users/:userID"
+	pathGetUserByID    = "/users/:userID"
+	pathGetUserByEmail = "/users/emailuser/:email"
+	pathCreateUser     = "/users/createuser"
 )
 
 // mapRoutes mapea las rutas de la aplicación
@@ -30,5 +32,10 @@ func mapRoutes(router *gin.Engine) {
 	router.POST(pathCreateReservation, controllers.CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
 	router.GET(pathGetUserByID, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByID)
-
+	router.GET(pathGetUserByEmail, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByEmail)
+	router.POST(pathCreateUser, func(ctx *gin.Context) {
+		userService := services.NewUserService(clients.NewDBClient())
+		userController := controllers.NewUserController(userService)
+		userController.CreateUser(ctx)
+	})
 }
