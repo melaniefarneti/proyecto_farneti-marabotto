@@ -6,9 +6,7 @@ import (
 )
 
 type DBClientMock struct {
-	//Hotels      []dao.Hotel
-	//DeletedIDs  []int
-	//DeleteError error
+	GetUserByIDFunc func(userID int) (*dao.User, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -69,4 +67,12 @@ func (m DBClientMock) DeleteHotel(hotelID int) error {
 
 	// Si el hotelID es válido, se ha eliminado correctamente y devolver nil (sin error).
 	return nil
+}
+
+// metodos user
+func (m DBClientMock) GetUserByID(userID int) (*dao.User, error) {
+	if m.GetUserByIDFunc != nil {
+		return m.GetUserByIDFunc(userID)
+	}
+	return nil, fmt.Errorf("GetUserByIDFunc not implemented")
 }

@@ -2,6 +2,8 @@ package app
 
 import (
 	"go-api/controllers"
+	"go-api/services"
+	"go-api/services/clients"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +16,7 @@ const (
 
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
-	pathGetUser = "/users/:userID"
+	pathGetUserByID = "/users/:userID"
 )
 
 // mapRoutes mapea las rutas de la aplicación
@@ -27,5 +29,6 @@ func mapRoutes(router *gin.Engine) {
 	//router.GET(pathGetHotel, controllers.GetHotels)
 	router.POST(pathCreateReservation, controllers.CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
-	router.GET(pathGetUser, controllers.GetUser)
+	router.GET(pathGetUserByID, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByID)
+
 }

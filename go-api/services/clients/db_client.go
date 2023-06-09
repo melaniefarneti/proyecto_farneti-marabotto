@@ -17,6 +17,8 @@ type DBClientInterface interface {
 	GetHotels() ([]dao.Hotel, error)
 	CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
 	DeleteHotel(hotelID int) error
+
+	GetUserByID(userID int) (*dao.User, error)
 }
 
 type DBClient struct {
@@ -128,4 +130,17 @@ func (c DBClient) DeleteHotel(hotelID int) error {
 	}
 
 	return nil
+}
+
+// metodos user
+func (c DBClient) GetUserByID(userID int) (*dao.User, error) {
+	var user dao.User
+	err := c.DB.Model(&dao.User{}).Where("id = ?", userID).First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, dao.ErrUserNotFound
+		}
+		return nil, err
+	}
+	return &user, nil
 }

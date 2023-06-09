@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"go-api/services"
 	"net/http"
 	"strconv"
@@ -9,21 +8,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	paramUserID = "userID"
-)
+// UserController es el controlador de usuarios
+type UserController struct {
+	UserService services.UserServiceInterface
+}
 
-func GetUser(ctx *gin.Context) {
-	idString := ctx.Param(paramUserID)
-	id, err := strconv.ParseInt(idString, 10, 64)
+// NewUserController crea una nueva instancia del controlador de usuarios
+func NewUserController(userService services.UserServiceInterface) *UserController {
+	return &UserController{
+		UserService: userService,
+	}
+}
+
+// GetUserByID obtiene un usuario por su ID
+func (c *UserController) GetUserByID(ctx *gin.Context) {
+	userIDStr := ctx.Param("userID")
+
+	// Convertir userIDStr a un valor entero
+	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, fmt.Errorf("error parsing user ID: %w", err))
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid user ID",
+		})
 		return
 	}
 
-	user, err := services.GetUser(int(id)) // Convertir id de int64 a int
+	// Llamar al servicio para obtener el usuario por su ID
+	user, err := c.UserService.GetUserByID(userID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, fmt.Errorf("error getting user: %w", err))
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error getting user",
+		})
 		return
 	}
 

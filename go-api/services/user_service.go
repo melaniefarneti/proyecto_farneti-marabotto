@@ -2,43 +2,31 @@ package services
 
 import (
 	"go-api/dao"
+	"go-api/services/clients"
 )
 
-var users []dao.User
-
-// GetUser obtiene los datos de un usuario por su ID
-func GetUser(id int) (dao.User, error) {
-	for _, user := range users {
-		if user.ID == id {
-			return user, nil
-		}
-	}
-	return dao.User{}, dao.ErrUserNotFound
+// UserServiceInterface define la interfaz para el servicio de usuarios
+type UserServiceInterface interface {
+	GetUserByID(userID int) (*dao.User, error)
 }
 
-/*
-// CreateUser crea un nuevo usuario
-func CreateUser(user domain.User) (domain.User, error) {
-	// Verificar si el usuario ya existe
-	for _, u := range users {
-		if u.Email == user.Email {
-			return domain.User{}, errors.New("user already exists")
-		}
+// UserService es una implementación del servicio de usuarios
+type UserService struct {
+	DBClient clients.DBClientInterface
+}
+
+// NewUserService crea una nueva instancia del servicio de usuarios
+func NewUserService(dbClient clients.DBClientInterface) UserServiceInterface {
+	return &UserService{
+		DBClient: dbClient,
 	}
+}
 
-	// Asignar ID único al usuario
-	user.ID = generateUserID()
-
-	// Agregar usuario a la lista
-	users = append(users, user)
-
+// GetUserByID obtiene un usuario por su ID
+func (s *UserService) GetUserByID(userID int) (*dao.User, error) {
+	user, err := s.DBClient.GetUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
 	return user, nil
 }
-
-// generateUserID genera un ID único para un usuario
-func generateUserID() int {
-	// Implementar la lógica para generar un ID único para el usuario, por ejemplo, incrementando un contador o utilizando un generador de IDs único
-	// generamos un ID incrementando un contador
-	return len(users) + 1
-}
-*/
