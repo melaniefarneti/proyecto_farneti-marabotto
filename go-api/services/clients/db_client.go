@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"errors"
 	"fmt"
 	"go-api/dao"
 	"log"
@@ -15,7 +16,7 @@ type DBClientInterface interface {
 	CountReservations(hotelID int, checkin string, checkout string) (int, error)
 	GetHotels() ([]dao.Hotel, error)
 	CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
-	//DeleteHotel(hotelID int) error
+	DeleteHotel(hotelID int) error
 }
 
 type DBClient struct {
@@ -109,4 +110,22 @@ func (c DBClient) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
 		return nil, fmt.Errorf("error creating hotel: %w", err)
 	}
 	return hotel, nil
+}
+
+func (c DBClient) DeleteHotel(hotelID int) error {
+	var hotel dao.Hotel
+	err := c.DB.Model(&dao.Hotel{}).Where("id = ?", hotelID).First(&hotel).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("hotel not found")
+		}
+		return err
+	}
+
+	err = c.DB.Delete(&hotel).Error
+	if err != nil {
+		return fmt.Errorf("error deleting hotel: %w", err)
+	}
+
+	return nil
 }

@@ -4,8 +4,7 @@ import (
 	"go-api/dao"
 	"go-api/services"
 	"net/http"
-
-	//"strconv"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,4 +47,30 @@ func CreateHotel(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, createdHotel)
+}
+
+func DeleteHotel(ctx *gin.Context) {
+	hotelIDStr := ctx.Param("hotelID")
+
+	// Convertir hotelIDStr a un valor entero
+	hotelID, err := strconv.Atoi(hotelIDStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid hotel ID",
+		})
+		return
+	}
+
+	hotelService := services.NewHotelService()
+	err = hotelService.DeleteHotel(hotelID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error deleting hotel",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "hotel deleted successfully",
+	})
 }

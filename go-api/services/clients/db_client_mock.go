@@ -60,3 +60,13 @@ func (m DBClientMock) CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error) {
 	hotel.ID = 1 // Asignar un ID ficticio para el hotel
 	return hotel, nil
 }
+
+func (m DBClientMock) DeleteHotel(hotelID int) error {
+	//verificar si el hotelID es igual a un valor específico y devolver un error simulado en caso contrario.
+	if hotelID != 123 {
+		return fmt.Errorf("hotel with ID %d does not exist", hotelID)
+	}
+
+	// Si el hotelID es válido, se ha eliminado correctamente y devolver nil (sin error).
+	return nil
+}

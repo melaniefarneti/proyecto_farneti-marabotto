@@ -9,6 +9,7 @@ import (
 type HotelServiceInterface interface {
 	GetHotels() ([]dao.Hotel, error)
 	CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
+	DeleteHotel(hotelID int) error
 }
 
 // HotelService es una implementación del servicio de hoteles
@@ -43,4 +44,14 @@ func NewHotelService() *HotelService {
 	return &HotelService{
 		DBClient: dbClient,
 	}
+}
+
+func (s *HotelService) DeleteHotel(hotelID int) error {
+	// Llamar al cliente de base de datos para eliminar el hotel
+	err := s.DBClient.DeleteHotel(hotelID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
