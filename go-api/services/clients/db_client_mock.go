@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"errors"
 	"fmt"
 	"go-api/dao"
 )
@@ -8,6 +9,7 @@ import (
 type DBClientMock struct {
 	GetUserByIDFunc    func(userID int) (*dao.User, error)
 	GetUserByEmailFunc func(email string) (*dao.User, error)
+	CreateUserFunc     func(user *dao.User) (*dao.User, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -86,5 +88,8 @@ func (m DBClientMock) GetUserByEmail(email string) (*dao.User, error) {
 }
 
 func (m DBClientMock) CreateUser(user *dao.User) (*dao.User, error) {
-	return user, nil
+	if m.CreateUserFunc != nil {
+		return m.CreateUserFunc(user)
+	}
+	return nil, errors.New("not implemented")
 }
