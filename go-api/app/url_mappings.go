@@ -31,7 +31,7 @@ func mapRoutes(router *gin.Engine) {
 	router.POST(pathCreateHotel, controllers.CreateHotel)
 	router.DELETE(pathDeleteHotel, controllers.DeleteHotel)
 	//router.GET(pathGetHotel, controllers.GetHotels)
-	router.POST(pathCreateReservation, controllers.CreateReservation)
+	router.POST(pathCreateReservation, controllers.NewReservationController(clients.NewDBClient()).CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
 	router.GET(pathGetUserByID, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByID)
 	router.GET(pathGetUserByEmail, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByEmail)

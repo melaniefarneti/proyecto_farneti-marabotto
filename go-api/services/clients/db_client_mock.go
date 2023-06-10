@@ -7,9 +7,11 @@ import (
 )
 
 type DBClientMock struct {
-	GetUserByIDFunc    func(userID int) (*dao.User, error)
-	GetUserByEmailFunc func(email string) (*dao.User, error)
-	CreateUserFunc     func(user *dao.User) (*dao.User, error)
+	GetUserByIDFunc       func(userID int) (*dao.User, error)
+	GetUserByEmailFunc    func(email string) (*dao.User, error)
+	CreateUserFunc        func(user *dao.User) (*dao.User, error)
+	CreateReservationFunc func(reservation dao.Reservation) error
+	CountReservationsFunc func(hotelID int, checkin string, checkout string) (int, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
