@@ -113,6 +113,57 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 }
 
 // Login realiza el proceso de autenticación y devuelve un token de acceso si las credenciales son válidas
+func (c *UserController) LoginAdmin(ctx *gin.Context) {
+	// Obtener las credenciales del cuerpo de la solicitud
+	var credentials dao.User
+	if err := ctx.ShouldBindJSON(&credentials); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Llamar al servicio para obtener el usuario por su dirección de correo electrónico
+	user, err := c.UserService.GetUserByEmail(credentials.Email)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Verificar la contraseña
+	err = services.CheckPassword(credentials.Password, user.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Verificar el rol del usuario
+	if user.Role != "administrador" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "only admins can login",
+		})
+		return
+	}
+
+	// Generar un token de acceso
+	token, err := services.GenerateAccessToken(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to generate access token",
+		})
+		return
+	}
+
+	// Devolver el token de acceso en la respuesta
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+}
+
 func (c *UserController) Login(ctx *gin.Context) {
 	// Obtener las credenciales del cuerpo de la solicitud
 	var credentials dao.User

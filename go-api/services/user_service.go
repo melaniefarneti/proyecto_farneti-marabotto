@@ -75,7 +75,7 @@ func CheckPassword(password, hashedPassword string) error {
 }
 
 // Login realiza el proceso de autenticación y devuelve un token de acceso si las credenciales son válidas
-func (s *UserService) Login(email, password string) (string, error) {
+func (s *UserService) LoginAdmin(email, password string) (string, error) {
 	// Llamar al cliente de la base de datos para obtener el usuario por su dirección de correo electrónico
 	user, err := s.DBClient.GetUserByEmail(email)
 	if err != nil {
@@ -83,7 +83,7 @@ func (s *UserService) Login(email, password string) (string, error) {
 	}
 
 	// Verificar el tipo de usuario (administrador o cliente)
-	if user.Role != "admin" {
+	if user.Role != "administrador" {
 		return "", errors.New("only administrators can log in")
 	}
 
@@ -121,4 +121,27 @@ func GenerateAccessToken(user *dao.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+// Login realiza el proceso de autenticación y devuelve un token de acceso si las credenciales son válidas
+func (s *UserService) Login(email, password string) (string, error) {
+	// Llamar al cliente de la base de datos para obtener el usuario por su dirección de correo electrónico
+	user, err := s.DBClient.GetUserByEmail(email)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	// Verificar la contraseña
+	err = CheckPassword(password, user.Password)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	// Generar y devolver un token de acceso
+	token, err := GenerateAccessToken(user)
+	if err != nil {
+		return "", errors.New("failed to generate access token")
+	}
+
+	return token, nil
 }

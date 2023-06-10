@@ -19,6 +19,7 @@ const (
 	pathGetUserByID    = "/users/:userID"
 	pathGetUserByEmail = "/users/emailuser/:email"
 	pathCreateUser     = "/users/createuser"
+	pathLoginAdmin     = "/login/admin"
 	pathLogin          = "/login"
 )
 
@@ -39,5 +40,6 @@ func mapRoutes(router *gin.Engine) {
 		userController := controllers.NewUserController(userService)
 		userController.CreateUser(ctx)
 	})
+	router.POST(pathLoginAdmin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).LoginAdmin)
 	router.POST(pathLogin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).Login)
 }
