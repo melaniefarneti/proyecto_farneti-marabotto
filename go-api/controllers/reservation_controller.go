@@ -35,7 +35,7 @@ func (c *ReservationController) CreateReservation(ctx *gin.Context) {
 	// Verificar si el cliente existe en la base de datos
 	_, err := c.ReservationService.DBClient.GetUserByEmail(request.Email)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "client does not exist"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "client does not exist, must register"})
 		return
 	}
 
@@ -47,4 +47,14 @@ func (c *ReservationController) CreateReservation(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "reservation created"})
+}
+
+func (c *ReservationController) GetReservations(ctx *gin.Context) {
+	reservations, err := c.ReservationService.GetReservations()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, reservations)
 }

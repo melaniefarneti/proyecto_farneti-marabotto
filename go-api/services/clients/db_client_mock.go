@@ -12,6 +12,7 @@ type DBClientMock struct {
 	CreateUserFunc        func(user *dao.User) (*dao.User, error)
 	CreateReservationFunc func(reservation dao.Reservation) error
 	CountReservationsFunc func(hotelID int, checkin string, checkout string) (int, error)
+	GetReservationsFunc   func() ([]dao.Reservation, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -92,6 +93,13 @@ func (m DBClientMock) GetUserByEmail(email string) (*dao.User, error) {
 func (m DBClientMock) CreateUser(user *dao.User) (*dao.User, error) {
 	if m.CreateUserFunc != nil {
 		return m.CreateUserFunc(user)
+	}
+	return nil, errors.New("not implemented")
+}
+
+func (m *DBClientMock) GetReservations() ([]dao.Reservation, error) {
+	if m.GetReservationsFunc != nil {
+		return m.GetReservationsFunc()
 	}
 	return nil, errors.New("not implemented")
 }

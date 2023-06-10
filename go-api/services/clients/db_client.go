@@ -21,6 +21,7 @@ type DBClientInterface interface {
 	GetUserByID(userID int) (*dao.User, error)
 	GetUserByEmail(email string) (*dao.User, error)
 	CreateUser(user *dao.User) (*dao.User, error)
+	GetReservations() ([]dao.Reservation, error)
 }
 
 type DBClient struct {
@@ -167,4 +168,13 @@ func (c DBClient) CreateUser(user *dao.User) (*dao.User, error) {
 		return nil, fmt.Errorf("error creating user: %w", err)
 	}
 	return user, nil
+}
+
+func (c DBClient) GetReservations() ([]dao.Reservation, error) {
+	var reservations []dao.Reservation
+	err := c.DB.Model(&dao.Reservation{}).Find(&reservations).Error
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
 }

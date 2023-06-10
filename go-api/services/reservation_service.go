@@ -103,3 +103,12 @@ func (s ReservationService) getTotalRoomsFromDB(hotelID int) (int, error) {
 
 	return hotel.Rooms, nil
 }
+
+func (s *ReservationService) GetReservations() ([]dao.Reservation, error) {
+	reservations, err := s.DBClient.GetReservations()
+	if err != nil {
+		return nil, err
+	}
+
+	return reservations, nil
+}

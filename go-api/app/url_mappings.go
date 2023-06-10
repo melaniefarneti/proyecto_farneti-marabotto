@@ -21,6 +21,7 @@ const (
 	pathCreateUser     = "/users/createuser"
 	pathLoginAdmin     = "/login/admin"
 	pathLogin          = "/login"
+	pathGetReservation = "/reservations/getreservations"
 )
 
 // mapRoutes mapea las rutas de la aplicación
@@ -42,4 +43,5 @@ func mapRoutes(router *gin.Engine) {
 	})
 	router.POST(pathLoginAdmin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).LoginAdmin)
 	router.POST(pathLogin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).Login)
+	router.GET(pathGetReservation, controllers.NewReservationController(clients.NewDBClient()).GetReservations)
 }
