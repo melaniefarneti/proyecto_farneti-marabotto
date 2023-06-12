@@ -2,34 +2,46 @@ package app
 
 import (
 	"go-api/controllers"
+	"go-api/services"
+	"go-api/services/clients"
 
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	pahtGetHotels = "/hotels/all"
+	pahtGetHotels   = "/hotels/gethotels"
+	pathCreateHotel = "/hotels/createhotel"
+	pathDeleteHotel = "/hotels/deletehotel/:hotelID"
 	//pathGetHotel          = "/hotels/:hotelID"
 
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
-	pathGetUser = "/users/:userID"
+	pathGetUserByID    = "/users/:userID"
+	pathGetUserByEmail = "/users/emailuser/:email"
+	pathCreateUser     = "/users/createuser"
+	pathLoginAdmin     = "/login/admin"
+	pathLogin          = "/login"
+	pathGetReservation = "/reservations/getreservations"
 )
 
 // mapRoutes mapea las rutas de la aplicación
 func mapRoutes(router *gin.Engine) {
-	router.GET(pahtGetHotels, controllers.GetHotels)
+	router.GET(pahtGetHotels, func(ctx *gin.Context) {
+		controllers.GetHotels(ctx)
+	})
+	router.POST(pathCreateHotel, controllers.CreateHotel)
+	router.DELETE(pathDeleteHotel, controllers.DeleteHotel)
 	//router.GET(pathGetHotel, controllers.GetHotels)
-	router.POST(pathCreateReservation, controllers.CreateReservation)
+	router.POST(pathCreateReservation, controllers.NewReservationController(clients.NewDBClient()).CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
-	router.GET(pathGetUser, controllers.GetUser)
-}
-
-// SetupRoutes configura y mapea las rutas de la aplicación
-func SetupRoutes() *gin.Engine {
-	router := gin.Default()
-
-	// Mapear las rutas
-	mapRoutes(router)
-
-	return router
+	router.GET(pathGetUserByID, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByID)
+	router.GET(pathGetUserByEmail, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByEmail)
+	router.POST(pathCreateUser, func(ctx *gin.Context) {
+		userService := services.NewUserService(clients.NewDBClient())
+		userController := controllers.NewUserController(userService)
+		userController.CreateUser(ctx)
+	})
+	router.POST(pathLoginAdmin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).LoginAdmin)
+	router.POST(pathLogin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).Login)
+	router.GET(pathGetReservation, controllers.NewReservationController(clients.NewDBClient()).GetReservations)
 }
