@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
-import { getReservations, getAdminReservations } from '../services/api';
+import { getReservations, deleteReservation } from '../services/api';
 
 const ReservationList = () => {
     const { user } = useContext(UserContext);
@@ -14,13 +15,26 @@ const ReservationList = () => {
         try {
             let response;
             if (user.isAdmin) {
-                response = await getAdminReservations(user.hotelId, new Date().toISOString().split('T')[0]);
+                response = await axios.get(`/admin/reservations`);
             } else {
                 response = await getReservations();
             }
-            setReservations(response);
+            setReservations(response.data);
         } catch (error) {
             console.error('Error fetching reservations:', error.message);
+        }
+    };
+
+    const handleDeleteReservation = async (reservationId) => {
+        try {
+            if (user.isAdmin) {
+                await deleteReservation(reservationId);
+                fetchReservations();
+            } else {
+                console.log('Only administrators can delete reservations.');
+            }
+        } catch (error) {
+            console.error('Error deleting reservation:', error.message);
         }
     };
 
@@ -34,6 +48,7 @@ const ReservationList = () => {
                     <th>Hotel</th>
                     <th>Name</th>
                     <th>Email</th>
+                    {user.isAdmin && <th>Action</th>}
                 </tr>
                 </thead>
                 <tbody>
@@ -43,6 +58,11 @@ const ReservationList = () => {
                         <td>{reservation.hotel}</td>
                         <td>{reservation.name}</td>
                         <td>{reservation.email}</td>
+                        {user.isAdmin && (
+                            <td>
+                                <button onClick={() => handleDeleteReservation(reservation.id)}>Delete</button>
+                            </td>
+                        )}
                     </tr>
                 ))}
                 </tbody>

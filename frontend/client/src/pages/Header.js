@@ -86,7 +86,7 @@ const Header = ({ type }) => {
                 </div>
                 {type !== "list" && (
                     <>
-                        <h1 className="headerTitle">Welcome!, to the HiHotel</h1>
+                        <h1 className="headerTitle">Welcome!, to HiHotel</h1>
                         <p className="headerDesc">
                             First thing first, you have to be registered to do a reservation.
                         </p>
