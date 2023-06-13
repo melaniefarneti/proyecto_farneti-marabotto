@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
-import './Register.css'
+import './Register.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -21,9 +21,10 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        // Call the backend API to register the user
+
+        // Call the backend API to create the user
         try {
-            const response = await fetch('/api/register', {
+            const response = await fetch('/users/createuser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,13 +36,13 @@ const Register = () => {
             });
 
             if (response.ok) {
-                console.log('User registered successfully');
+                console.log('User created successfully');
                 // Reset form fields
                 setEmail('');
                 setPassword('');
                 setConfirmPassword('');
             } else {
-                console.log('Registration failed');
+                console.log('User creation failed');
             }
         } catch (error) {
             console.log('Error:', error);
@@ -50,47 +51,47 @@ const Register = () => {
 
     return (
         <div className="Navbar">
-            <Navbar/>
-        <div className="center-align">
-            <div className="titulo">
-            <h3>Register</h3>
+            <Navbar />
+            <div className="contenedor">
+                <div className="titulo">
+                    <h3>Register</h3>
+                </div>
+                <div className="body">
+                    <form onSubmit={handleRegister}>
+                        <div className="form-group">
+                            <label htmlFor="email">Email:</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password:</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword">Confirm Password:</label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                required
+                            />
+                        </div>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
             </div>
-            <div className="body">
-            <form onSubmit={handleRegister}>
-                <div className="form-group">
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="confirmPassword">Confirm Password:</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        required
-                    />
-                </div>
-                <button type="submit">Register</button>
-            </form>
-            </div>
-        </div>
         </div>
     );
 };

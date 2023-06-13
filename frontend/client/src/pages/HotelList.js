@@ -22,7 +22,7 @@ const HotelList = () => {
 
     useEffect(() => {
         axios
-            .get('/hotels')
+            .get('/hotels/gethotels')
             .then(response => {
                 // Manejar la respuesta exitosa del backend
                 setHotels(response.data);

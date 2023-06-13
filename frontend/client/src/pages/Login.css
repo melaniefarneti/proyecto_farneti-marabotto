@@ -10,7 +10,7 @@ body {
     background-color: #0f4c75;
 }
 
-#contenedor {
+.contenedor {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +23,7 @@ body {
     height: 100%;
 }
 
-#central {
+.central {
     max-width: 320px;
     width: 100%;
 }

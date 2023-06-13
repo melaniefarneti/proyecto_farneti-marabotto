@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getHotels } from '../services/api';
 import Navbar from './Navbar';
 import Header from './Header';
-import Featured from './featured/Featured';
-import PropertyList from './PropertyList';
-import FeaturedProperties from './featuredProperties/FeaturedProperties';
+import FeaturedProperties from './FeaturedProperties';
 import MailList from './MailList';
 import Footer from './Footer';
 
@@ -14,8 +11,9 @@ const Home = () => {
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                const hotelsData = await getHotels();
-                setHotels(hotelsData);
+                const response = await fetch('/hotels/gethotels');
+                const data = await response.json();
+                setHotels(data);
             } catch (error) {
                 console.error(error);
             }
@@ -27,10 +25,10 @@ const Home = () => {
     return (
         <div className="home">
             <Navbar />
-            <Header/>
+            <Header />
             <div className="homeContainer">
                 <h1 className="homeTitle">Homes guests love</h1>
-                <FeaturedProperties />
+                <FeaturedProperties hotels={hotels} />
                 <MailList />
                 <Footer />
             </div>

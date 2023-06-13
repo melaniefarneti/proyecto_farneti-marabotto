@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../contexts/UserContext';
-import { getReservations, deleteReservation } from '../services/api';
 
 const ReservationList = () => {
     const { user } = useContext(UserContext);
@@ -15,9 +14,9 @@ const ReservationList = () => {
         try {
             let response;
             if (user.isAdmin) {
-                response = await axios.get(`/admin/reservations`);
+                response = await axios.get('/reservations/getreservations');
             } else {
-                response = await getReservations();
+                response = await axios.get('/');
             }
             setReservations(response.data);
         } catch (error) {
@@ -28,7 +27,7 @@ const ReservationList = () => {
     const handleDeleteReservation = async (reservationId) => {
         try {
             if (user.isAdmin) {
-                await deleteReservation(reservationId);
+                await axios.delete(`/admin/reservations/${reservationId}`);
                 fetchReservations();
             } else {
                 console.log('Only administrators can delete reservations.');
@@ -72,3 +71,4 @@ const ReservationList = () => {
 };
 
 export default ReservationList;
+

@@ -8,7 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Header.css";
-import login from "./Login";
 import { DateRange } from "react-date-range";
 import { Link } from "react-router-dom";
 import { useState, useContext } from "react";
@@ -17,7 +16,6 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext.js";
-
 
 const Header = ({ type }) => {
     const { user, logout } = useContext(UserContext);
@@ -42,14 +40,16 @@ const Header = ({ type }) => {
         setOptions((prev) => {
             return {
                 ...prev,
-                [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
+                [name]:
+                    operation === "i" ? options[name] + 1 : options[name] - 1,
             };
         });
     };
 
     const handleSearch = () => {
-        if (user) {
-            navigate("/hotels", { state: { destination, date, options } });
+        if (user && destination && date[0].startDate && date[0].endDate) {
+            // Lógica para crear la reserva
+            console.log("Reserva creada correctamente");
         } else {
             navigate("/Login");
         }
@@ -95,14 +95,13 @@ const Header = ({ type }) => {
                                 Log out
                             </button>
                         ) : (
-                            <Link to="/Login" className="headerBtn">Sign in / Register</Link>
+                            <Link to="/Login" className="headerBtn">
+                                Sign in / Register
+                            </Link>
                         )}
                         <div className="headerSearch">
                             <div className="headerSearchItem">
-                                <FontAwesomeIcon
-                                    icon={faBed}
-                                    className="headerIcon"
-                                />
+                                <FontAwesomeIcon icon={faBed} className="headerIcon" />
                                 <input
                                     type="text"
                                     placeholder="Where are you going?"
@@ -134,10 +133,7 @@ const Header = ({ type }) => {
                                 )}
                             </div>
                             <div className="headerSearchItem">
-                                <FontAwesomeIcon
-                                    icon={faPerson}
-                                    className="headerIcon"
-                                />
+                                <FontAwesomeIcon icon={faPerson} className="headerIcon" />
                                 <span
                                     onClick={() => setOpenOptions(!openOptions)}
                                     className="headerSearchText"
