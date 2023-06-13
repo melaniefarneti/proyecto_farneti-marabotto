@@ -30,7 +30,7 @@ const HotelCard = ({ hotel }) => {
             }
         } else {
             console.log('User not authenticated. Redirect to login page.');
-            // Aquí puedes redirigir al usuario a la página de inicio de sesión
+            // Aquí redirige al usuario a la página de inicio de sesión
         }
     };
 

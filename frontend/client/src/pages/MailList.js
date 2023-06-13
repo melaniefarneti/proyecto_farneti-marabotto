@@ -52,7 +52,7 @@ const MailList = () => {
     return (
         <div className="mail">
             <h1 className="mailTitle">Save time, save money!</h1>
-            <span className="mailDesc">Look for your reservation</span>
+            <span className="mailDesc">Look for reservation</span>
             <div className="mailInputContainer">
                 <input type="text" placeholder="Your Email" />
                 {user && user.isAdmin && (
