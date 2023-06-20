@@ -1,4 +1,4 @@
-package domain
+package dto
 
 type HotelRequest struct {
 	Name        string `json:"nombre"`

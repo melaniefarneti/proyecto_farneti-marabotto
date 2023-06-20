@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-api/dao"
+	"go-api/dto"
 	"go-api/services"
 	"net/http"
 	"strconv"
@@ -25,17 +26,34 @@ func GetHotels(ctx *gin.Context) {
 }
 
 func CreateHotel(ctx *gin.Context) {
-	// Parsear los datos del cuerpo de la solicitud JSON en una estructura Hotel
-	var hotel dao.Hotel
-	if err := ctx.ShouldBindJSON(&hotel); err != nil {
+	// Parsear los datos del cuerpo de la solicitud JSON en una estructura HotelRequest
+	var hotelRequest dto.HotelRequest
+	if err := ctx.ShouldBindJSON(&hotelRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid data",
 		})
 		return
 	}
 
+	// Verificar si algún campo requerido está en blanco
+	if hotelRequest.Name == "" || hotelRequest.Photo == "" || hotelRequest.Description == "" || hotelRequest.Location == "" || hotelRequest.Rooms == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "missing required data",
+		})
+		return
+	}
+
 	// Crear una instancia del servicio de hoteles
 	hotelService := services.NewHotelService()
+
+	// Crear un objeto Hotel basado en los datos del HotelRequest
+	hotel := dao.Hotel{
+		Name:        hotelRequest.Name,
+		Photo:       hotelRequest.Photo,
+		Description: hotelRequest.Description,
+		Location:    hotelRequest.Location,
+		Rooms:       hotelRequest.Rooms,
+	}
 
 	// Llamar al servicio para crear el hotel
 	createdHotel, err := hotelService.CreateHotel(&hotel)
@@ -46,6 +64,7 @@ func CreateHotel(ctx *gin.Context) {
 		return
 	}
 
+	// Retornar el objeto creado como respuesta
 	ctx.JSON(http.StatusOK, createdHotel)
 }
 

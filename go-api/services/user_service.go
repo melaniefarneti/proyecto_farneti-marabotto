@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
+	"go-api/clients"
 	"go-api/dao"
-	"go-api/services/clients"
 
 	"time"
 

@@ -1,4 +1,4 @@
-package domain
+package dto
 
 type UserRequest struct {
 	Name     string `json:"nombre"`

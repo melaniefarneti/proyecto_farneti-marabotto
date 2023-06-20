@@ -3,8 +3,8 @@ package services
 import (
 	"errors"
 	"fmt"
+	"go-api/clients"
 	"go-api/dao"
-	"go-api/services/clients"
 	"time"
 )
 

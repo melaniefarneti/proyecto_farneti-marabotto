@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"go-api/domain"
+	"go-api/clients"
+	"go-api/dto"
 	"go-api/services"
-	"go-api/services/clients"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +26,7 @@ func NewReservationController(dbClient clients.DBClientInterface) *ReservationCo
 
 func (c *ReservationController) CreateReservation(ctx *gin.Context) {
 	// Obtener los parámetros del hotel, fechas de entrada y salida, y nombre del cliente del cuerpo de la solicitud
-	var request domain.ReservationRequest
+	var request dto.ReservationRequest
 	if err := ctx.BindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return

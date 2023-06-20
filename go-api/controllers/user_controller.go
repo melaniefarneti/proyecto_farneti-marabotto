@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"go-api/dao"
+	"go-api/dto"
 	"go-api/services"
 	"net/http"
 	"strconv"
@@ -63,6 +64,7 @@ func (c *UserController) GetUserByEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+/*
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	// Obtener los datos del usuario del cuerpo de la solicitud
 	var user dao.User
@@ -110,10 +112,64 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, createdUser)
+}*/
+
+func (c *UserController) CreateUser(ctx *gin.Context) {
+	// Obtener los datos del usuario del cuerpo de la solicitud
+	var userRequest dto.UserRequest
+	if err := ctx.ShouldBindJSON(&userRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid user data",
+		})
+		return
+	}
+
+	// Verificar si el usuario ya existe en la base de datos
+	existingUser, err := c.UserService.GetUserByEmail(userRequest.Email)
+	if err != nil && !errors.Is(err, dao.ErrUserNotFound) {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error checking user existence",
+		})
+		return
+	}
+	if existingUser != nil && existingUser.Email == userRequest.Email {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "user already exists",
+		})
+		return
+	}
+
+	// Encriptar la contraseña antes de almacenarla
+	hashedPassword, err := services.HashPassword(userRequest.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error hashing password",
+		})
+		return
+	}
+
+	// Crear una instancia de la estructura de acceso a la base de datos (dao.User) utilizando los datos del DTO
+	user := dao.User{
+		Name:     userRequest.Name,
+		Email:    userRequest.Email,
+		Password: hashedPassword,
+		Role:     userRequest.Role,
+	}
+
+	// Llamar al servicio de usuarios para crear el usuario
+	createdUser, err := c.UserService.CreateUser(&user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error creating user",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, createdUser)
 }
 
 // Login realiza el proceso de autenticación y devuelve un token de acceso si las credenciales son válidas
-func (c *UserController) LoginAdmin(ctx *gin.Context) {
+/*func (c *UserController) LoginAdmin(ctx *gin.Context) {
 	// Obtener las credenciales del cuerpo de la solicitud
 	var credentials dao.User
 	if err := ctx.ShouldBindJSON(&credentials); err != nil {
@@ -162,9 +218,59 @@ func (c *UserController) LoginAdmin(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
+}*/
+func (c *UserController) LoginAdmin(ctx *gin.Context) {
+	// Obtener las credenciales del cuerpo de la solicitud
+	var loginRequest dto.UserRequest
+	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Llamar al servicio para obtener el usuario por su dirección de correo electrónico
+	user, err := c.UserService.GetUserByEmail(loginRequest.Email)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Verificar la contraseña
+	err = services.CheckPassword(loginRequest.Password, user.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Verificar el rol del usuario
+	if user.Role != "administrador" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "only admins can login",
+		})
+		return
+	}
+
+	// Generar un token de acceso
+	token, err := services.GenerateAccessToken(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to generate access token",
+		})
+		return
+	}
+
+	// Devolver el token de acceso en la respuesta
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
 }
 
-func (c *UserController) Login(ctx *gin.Context) {
+/*func (c *UserController) Login(ctx *gin.Context) {
 	// Obtener las credenciales del cuerpo de la solicitud
 	var credentials dao.User
 	if err := ctx.ShouldBindJSON(&credentials); err != nil {
@@ -185,6 +291,49 @@ func (c *UserController) Login(ctx *gin.Context) {
 
 	// Verificar la contraseña
 	err = services.CheckPassword(credentials.Password, user.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Generar un token de acceso
+	token, err := services.GenerateAccessToken(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to generate access token",
+		})
+		return
+	}
+
+	// Devolver el token de acceso en la respuesta
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+}*/
+
+func (c *UserController) Login(ctx *gin.Context) {
+	// Obtener las credenciales del cuerpo de la solicitud
+	var loginRequest dto.UserRequest
+	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Llamar al servicio para obtener el usuario por su dirección de correo electrónico
+	user, err := c.UserService.GetUserByEmail(loginRequest.Email)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	// Verificar la contraseña
+	err = services.CheckPassword(loginRequest.Password, user.Password)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"error": "invalid credentials",

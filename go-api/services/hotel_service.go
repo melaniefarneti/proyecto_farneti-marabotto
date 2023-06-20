@@ -1,8 +1,8 @@
 package services
 
 import (
+	"go-api/clients"
 	"go-api/dao"
-	"go-api/services/clients"
 )
 
 // HotelServiceInterface define la interfaz para el servicio de hoteles

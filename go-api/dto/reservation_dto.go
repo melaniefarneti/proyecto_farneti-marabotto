@@ -1,4 +1,4 @@
-package domain
+package dto
 
 type ReservationRequest struct {
 	HotelID  int    `json:"hotel_id"`

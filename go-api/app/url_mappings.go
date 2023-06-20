@@ -1,9 +1,9 @@
 package app
 
 import (
+	"go-api/clients"
 	"go-api/controllers"
 	"go-api/services"
-	"go-api/services/clients"
 
 	"github.com/gin-gonic/gin"
 )
