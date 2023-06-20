@@ -11,6 +11,7 @@ import (
 type ServiceInterface interface {
 	CreateReservation(hotelID int, checkin, checkout, clientName string) error
 	GetReservationsByUserID(userID int) ([]*dao.Reservation, error)
+	GetAvailableRoomsByHotelID(hotelID int, checkin, checkout string) (int, error)
 }
 
 type ReservationService struct {
@@ -130,4 +131,38 @@ func (s *ReservationService) GetReservationsByHotelID(hotelID int) ([]*dao.Reser
 		return nil, err
 	}
 	return reservations, nil
+}
+
+func (s ReservationService) GetAvailableRoomsByHotelID(hotelID int, checkin, checkout string) (int, error) {
+	// Validar el formato de las fechas de check-in y check-out
+	_, err := time.Parse("2006-01-02", checkin)
+	if err != nil {
+		return 0, fmt.Errorf("invalid check-in date format: %w", err)
+	}
+
+	_, err = time.Parse("2006-01-02", checkout)
+	if err != nil {
+		return 0, fmt.Errorf("invalid check-out date format: %w", err)
+	}
+
+	// Obtener la cantidad total de habitaciones del hotel
+	totalRooms, err := s.getTotalRoomsFromDB(hotelID)
+	if err != nil {
+		return 0, err
+	}
+
+	// Obtener la cantidad de habitaciones reservadas para el hotel y las fechas especificadas
+	reservedRooms, err := s.DBClient.GetReservedRoomsByHotelIDAndDates(hotelID, checkin, checkout)
+	if err != nil {
+		return 0, err
+	}
+
+	// Calcular la cantidad de habitaciones disponibles
+	availableRooms := totalRooms - reservedRooms
+
+	if availableRooms < 0 {
+		return 0, errors.New("no available rooms for the specified hotel and dates")
+	}
+
+	return availableRooms, nil
 }

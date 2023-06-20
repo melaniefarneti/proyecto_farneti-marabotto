@@ -25,6 +25,8 @@ type DBClientInterface interface {
 
 	GetReservationsByUserID(userID int) ([]*dao.Reservation, error)
 	GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, error)
+
+	GetReservedRoomsByHotelIDAndDates(hotelID int, checkin, checkout string) (int, error)
 }
 
 type DBClient struct {
@@ -200,4 +202,17 @@ func (c DBClient) GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, err
 		return nil, err
 	}
 	return reservations, nil
+}
+
+func (c DBClient) GetReservedRoomsByHotelIDAndDates(hotelID int, checkin, checkout string) (int, error) {
+	var count int64
+	err := c.DB.Model(&dao.Reservation{}).
+		Where("hotel_id = ?", hotelID).
+		Where("checkin <= ?", checkout).
+		Where("checkout >= ?", checkin).
+		Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
 }

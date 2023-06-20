@@ -9,26 +9,27 @@ import (
 )
 
 const (
-	pahtGetHotels   = "/hotels/gethotels"
+	pathGetHotels   = "/hotels/gethotels"
 	pathCreateHotel = "/hotels/createhotel"
 	pathDeleteHotel = "/hotels/deletehotel/:hotelID"
 	//pathGetHotel          = "/hotels/:hotelID"
 
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
-	pathGetUserByID             = "/users/:userID"
-	pathGetUserByEmail          = "/users/emailuser/:email"
-	pathCreateUser              = "/users/createuser"
-	pathLoginAdmin              = "/login/admin"
-	pathLogin                   = "/login"
-	pathGetReservation          = "/reservations/getreservations"
-	pathGetReservationByUserId  = "/reservations/getreservationsbyuserid/:userID"
-	pathGetReservationByHotelId = "/reservations/getreservationsbyhotelid/:hotelID"
+	pathGetUserByID                = "/users/:userID"
+	pathGetUserByEmail             = "/users/emailuser/:email"
+	pathCreateUser                 = "/users/createuser"
+	pathLoginAdmin                 = "/login/admin"
+	pathLogin                      = "/login"
+	pathGetReservation             = "/reservations/getreservations"
+	pathGetReservationByUserId     = "/reservations/getreservationsbyuserid/:userID"
+	pathGetReservationByHotelId    = "/reservations/getreservationsbyhotelid/:hotelID"
+	pathGetAvailableRoomsByHotelId = "/availablerooms/:hotelID/:checkin/:checkout"
 )
 
 // mapRoutes mapea las rutas de la aplicación
 func mapRoutes(router *gin.Engine) {
-	router.GET(pahtGetHotels, func(ctx *gin.Context) {
+	router.GET(pathGetHotels, func(ctx *gin.Context) {
 		controllers.GetHotels(ctx)
 	})
 	router.POST(pathCreateHotel, controllers.CreateHotel)
@@ -48,4 +49,5 @@ func mapRoutes(router *gin.Engine) {
 	router.GET(pathGetReservation, controllers.NewReservationController(clients.NewDBClient()).GetReservations)
 	router.GET(pathGetReservationByUserId, controllers.NewReservationController(clients.NewDBClient()).GetReservationsByUserID)
 	router.GET(pathGetReservationByHotelId, controllers.NewReservationController(clients.NewDBClient()).GetReservationsByHotelID)
+	router.GET(pathGetAvailableRoomsByHotelId, controllers.NewReservationController(clients.NewDBClient()).GetAvailableRoomsByHotelID)
 }

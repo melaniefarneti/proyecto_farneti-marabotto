@@ -7,14 +7,16 @@ import (
 )
 
 type DBClientMock struct {
-	GetUserByIDFunc        func(userID int) (*dao.User, error)
-	GetUserByEmailFunc     func(email string) (*dao.User, error)
-	CreateUserFunc         func(user *dao.User) (*dao.User, error)
-	CreateReservationFunc  func(reservation dao.Reservation) error
-	CountReservationsFunc  func(hotelID int, checkin string, checkout string) (int, error)
-	GetReservationsFunc    func() ([]dao.Reservation, error)
-	GetHotelByIDFunc       func(hotelID int) (dao.Hotel, error)
-	etReservationsByUserID func(userID int) ([]*dao.Reservation, error)
+	GetUserByIDFunc                       func(userID int) (*dao.User, error)
+	GetUserByEmailFunc                    func(email string) (*dao.User, error)
+	CreateUserFunc                        func(user *dao.User) (*dao.User, error)
+	CreateReservationFunc                 func(reservation dao.Reservation) error
+	CountReservationsFunc                 func(hotelID int, checkin string, checkout string) (int, error)
+	GetReservationsFunc                   func() ([]dao.Reservation, error)
+	GetHotelByIDFunc                      func(hotelID int) (dao.Hotel, error)
+	GetReservationsByUserIDFunc           func(userID int) ([]*dao.Reservation, error)
+	GetReservationsByHotelIDFunc          func(hotelID int) ([]*dao.Reservation, error)
+	GetReservedRoomsByHotelIDAndDatesFunc func(hotelID int, checkin, checkout string) (int, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -118,4 +120,11 @@ func (m *DBClientMock) GetReservationsByHotelID(hotelID int) ([]*dao.Reservation
 	//	return m.GetReservationsByHotelID(hotelID)
 	//}
 	return nil, errors.New("not implemented")
+}
+
+func (m *DBClientMock) GetReservedRoomsByHotelIDAndDates(hotelID int, checkin, checkout string) (int, error) {
+	if m.GetReservedRoomsByHotelIDAndDatesFunc != nil {
+		return m.GetReservedRoomsByHotelIDAndDatesFunc(hotelID, checkin, checkout)
+	}
+	return 0, errors.New("not implemented")
 }

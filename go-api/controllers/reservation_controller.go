@@ -92,3 +92,23 @@ func (c *ReservationController) GetReservationsByHotelID(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"reservations": reservations})
 }
+
+func (c *ReservationController) GetAvailableRoomsByHotelID(ctx *gin.Context) {
+	hotelID, err := strconv.Atoi(ctx.Param("hotelID"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid hotelID"})
+		return
+	}
+
+	checkin := ctx.Param("checkin")
+	checkout := ctx.Param("checkout")
+
+	// Obtener la cantidad de habitaciones disponibles para el hotel y las fechas especificadas
+	availableRooms, err := c.ReservationService.GetAvailableRoomsByHotelID(hotelID, checkin, checkout)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"availableRooms": availableRooms})
+}
