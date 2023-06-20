@@ -27,6 +27,8 @@ type DBClientInterface interface {
 	GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, error)
 
 	GetReservedRoomsByHotelIDAndDates(hotelID int, checkin, checkout string) (int, error)
+	CreateAmenity(amenity *dao.Amenity) error
+	CreateHotelPhoto(photo *dao.HotelPhoto) error
 }
 
 type DBClient struct {
@@ -215,4 +217,18 @@ func (c DBClient) GetReservedRoomsByHotelIDAndDates(hotelID int, checkin, checko
 		return 0, err
 	}
 	return int(count), nil
+}
+
+func (c DBClient) CreateAmenity(amenity *dao.Amenity) error {
+	if err := c.DB.Create(amenity).Error; err != nil {
+		return fmt.Errorf("error creating amenity: %w", err)
+	}
+	return nil
+}
+
+func (c DBClient) CreateHotelPhoto(photo *dao.HotelPhoto) error {
+	if err := c.DB.Create(photo).Error; err != nil {
+		return fmt.Errorf("error creating hotel photo: %w", err)
+	}
+	return nil
 }

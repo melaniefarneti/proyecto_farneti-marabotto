@@ -3,6 +3,7 @@ package services
 import (
 	"go-api/clients"
 	"go-api/dao"
+	"go-api/dto"
 )
 
 // HotelServiceInterface define la interfaz para el servicio de hoteles
@@ -49,6 +50,22 @@ func NewHotelService() *HotelService {
 func (s *HotelService) DeleteHotel(hotelID int) error {
 	// Llamar al cliente de base de datos para eliminar el hotel
 	err := s.DBClient.DeleteHotel(hotelID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *HotelService) UploadHotelPhoto(photoDTO dto.HotelPhoto) error {
+	// Crear una instancia del DAO HotelPhoto
+	photo := dao.HotelPhoto{
+		HotelID:  photoDTO.HotelID,
+		Filename: photoDTO.Filename,
+	}
+
+	// Llamar al cliente de base de datos para crear la foto del hotel
+	err := s.DBClient.CreateHotelPhoto(&photo)
 	if err != nil {
 		return err
 	}
