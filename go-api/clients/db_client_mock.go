@@ -13,6 +13,7 @@ type DBClientMock struct {
 	CreateReservationFunc func(reservation dao.Reservation) error
 	CountReservationsFunc func(hotelID int, checkin string, checkout string) (int, error)
 	GetReservationsFunc   func() ([]dao.Reservation, error)
+	GetHotelByIDFunc      func(hotelID int) (dao.Hotel, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
