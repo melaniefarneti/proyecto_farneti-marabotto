@@ -6,6 +6,7 @@ import (
 	"go-api/dto"
 	"go-api/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,4 +58,37 @@ func (c *ReservationController) GetReservations(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, reservations)
+}
+
+// GetReservationsByUserID busca las reservas por ID de usuario
+func (c *ReservationController) GetReservationsByUserID(ctx *gin.Context) {
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid userID"})
+		return
+	}
+
+	reservations, err := c.ReservationService.GetReservationsByUserID(userID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get reservations"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"reservations": reservations})
+}
+
+func (c *ReservationController) GetReservationsByHotelID(ctx *gin.Context) {
+	hotelID, err := strconv.Atoi(ctx.Param("hotelID"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid hotelID"})
+		return
+	}
+
+	reservations, err := c.ReservationService.GetReservationsByHotelID(hotelID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get reservations"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"reservations": reservations})
 }

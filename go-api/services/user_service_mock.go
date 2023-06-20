@@ -23,9 +23,9 @@ func NewUserServiceMock() *UserServiceMock {
 }
 
 func (m *UserServiceMock) GetUserByEmail(email string) (*dao.User, error) {
-	if m.GetUserByEmail != nil {
-		return m.GetUserByEmail(email)
-	}
+	//if m.GetUserByEmail != nil {
+	//	return m.GetUserByEmail(email)
+	//}
 	return nil, fmt.Errorf("GetUserByEmail not implemented")
 }
 

@@ -5,4 +5,5 @@ type ReservationRequest struct {
 	Checkin  string `json:"checkin"`
 	Checkout string `json:"checkout"`
 	Email    string `json:"email"`
+	UserID   int    `json:"user_id"`
 }

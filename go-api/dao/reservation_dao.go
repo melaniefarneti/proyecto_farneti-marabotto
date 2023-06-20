@@ -10,4 +10,5 @@ type Reservation struct {
 	CheckIn    string `gorm:"column:checkin"`
 	CheckOut   string `gorm:"column:checkout"`
 	ClientName string `gorm:"column:cliente_nombre"`
+	UserID     int    `gorm:"column:user_id"`
 }

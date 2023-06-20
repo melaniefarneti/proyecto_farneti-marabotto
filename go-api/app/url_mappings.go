@@ -16,12 +16,14 @@ const (
 
 	pathCreateReservation = "/reservations"
 	//pathGetAmenity     = "/amenities/:amenityID"
-	pathGetUserByID    = "/users/:userID"
-	pathGetUserByEmail = "/users/emailuser/:email"
-	pathCreateUser     = "/users/createuser"
-	pathLoginAdmin     = "/login/admin"
-	pathLogin          = "/login"
-	pathGetReservation = "/reservations/getreservations"
+	pathGetUserByID             = "/users/:userID"
+	pathGetUserByEmail          = "/users/emailuser/:email"
+	pathCreateUser              = "/users/createuser"
+	pathLoginAdmin              = "/login/admin"
+	pathLogin                   = "/login"
+	pathGetReservation          = "/reservations/getreservations"
+	pathGetReservationByUserId  = "/reservations/getreservationsbyuserid/:userID"
+	pathGetReservationByHotelId = "/reservations/getreservationsbyhotelid/:hotelID"
 )
 
 // mapRoutes mapea las rutas de la aplicación
@@ -44,4 +46,6 @@ func mapRoutes(router *gin.Engine) {
 	router.POST(pathLoginAdmin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).LoginAdmin)
 	router.POST(pathLogin, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).Login)
 	router.GET(pathGetReservation, controllers.NewReservationController(clients.NewDBClient()).GetReservations)
+	router.GET(pathGetReservationByUserId, controllers.NewReservationController(clients.NewDBClient()).GetReservationsByUserID)
+	router.GET(pathGetReservationByHotelId, controllers.NewReservationController(clients.NewDBClient()).GetReservationsByHotelID)
 }

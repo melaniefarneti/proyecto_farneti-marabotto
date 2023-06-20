@@ -10,6 +10,7 @@ import (
 
 type ServiceInterface interface {
 	CreateReservation(hotelID int, checkin, checkout, clientName string) error
+	GetReservationsByUserID(userID int) ([]*dao.Reservation, error)
 }
 
 type ReservationService struct {
@@ -110,5 +111,23 @@ func (s *ReservationService) GetReservations() ([]dao.Reservation, error) {
 		return nil, err
 	}
 
+	return reservations, nil
+}
+
+// GetReservationsByUserID busca las reservas por ID de usuario
+func (s *ReservationService) GetReservationsByUserID(userID int) ([]*dao.Reservation, error) {
+	reservations, err := s.DBClient.GetReservationsByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
+}
+
+// GetReservationsByHotelID busca las reservas por ID de hotel
+func (s *ReservationService) GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, error) {
+	reservations, err := s.DBClient.GetReservationsByHotelID(hotelID)
+	if err != nil {
+		return nil, err
+	}
 	return reservations, nil
 }

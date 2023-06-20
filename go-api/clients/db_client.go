@@ -22,6 +22,9 @@ type DBClientInterface interface {
 	GetUserByEmail(email string) (*dao.User, error)
 	CreateUser(user *dao.User) (*dao.User, error)
 	GetReservations() ([]dao.Reservation, error)
+
+	GetReservationsByUserID(userID int) ([]*dao.Reservation, error)
+	GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, error)
 }
 
 type DBClient struct {
@@ -173,6 +176,26 @@ func (c DBClient) CreateUser(user *dao.User) (*dao.User, error) {
 func (c DBClient) GetReservations() ([]dao.Reservation, error) {
 	var reservations []dao.Reservation
 	err := c.DB.Model(&dao.Reservation{}).Find(&reservations).Error
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
+}
+
+// GetReservationsByUserID busca las reservas por ID de usuario en la base de datos
+func (c DBClient) GetReservationsByUserID(userID int) ([]*dao.Reservation, error) {
+	var reservations []*dao.Reservation
+	err := c.DB.Model(&dao.Reservation{}).Where("user_id = ?", userID).Find(&reservations).Error
+	if err != nil {
+		return nil, err
+	}
+	return reservations, nil
+}
+
+// GetReservationsByHotelID busca las reservas por ID de hotel en la base de datos
+func (c DBClient) GetReservationsByHotelID(hotelID int) ([]*dao.Reservation, error) {
+	var reservations []*dao.Reservation
+	err := c.DB.Model(&dao.Reservation{}).Where("hotel_id = ?", hotelID).Find(&reservations).Error
 	if err != nil {
 		return nil, err
 	}
