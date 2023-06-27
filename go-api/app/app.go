@@ -1,26 +1,39 @@
 package app
 
 import (
-	"fmt" //para formatear y mostrar mensajes
+	"html/template"
 
-	"github.com/gin-gonic/gin" //framework Gin
+	"fmt"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
 	port = ":8080"
 )
 
-/*Aquí es donde se configura y se inicia el servidor web*/
+// función auxiliar para cargar y analizar el archivo de plantilla
+func loadTemplate(filename string) (*template.Template, error) {
+	return template.ParseFiles(filename)
+}
+
 func StartApp() {
-	router := gin.Default() // configura el enrutador con la configuración predeterminada de Gin,
-	// que incluye el registro de solicitudes y recuperación automática de errores.
+	router := gin.Default()
+	router.Use(corsMiddleware()) // Agregar el middleware CORS
 
-	mapRoutes(router) //mapea y define las rutas y controladores de la aplicación en el enrutador.
+	mapRoutes(router)
 
-	err := router.Run(port) // escucha las solicitudes entrantes y maneja las rutas registradas en el
-	// enrutador. Si ocurre algún error durante la ejecución del servidor, se
-	// captura y se produce un pánico.
+	err := router.Run(port)
 	if err != nil {
 		panic(fmt.Errorf("error running app: %w", err))
+	}
+}
+
+func corsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		c.Next()
 	}
 }

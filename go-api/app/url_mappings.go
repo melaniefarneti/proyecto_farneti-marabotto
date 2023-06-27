@@ -31,9 +31,7 @@ const (
 
 // mapRoutes mapea las rutas de la aplicación
 func mapRoutes(router *gin.Engine) {
-	router.GET(pathGetHotels, func(ctx *gin.Context) {
-		controllers.GetHotels(ctx)
-	})
+	router.GET(pathGetHotels, func(ctx *gin.Context) { controllers.GetHotels(ctx) })
 	router.POST(pathCreateHotel, controllers.CreateHotel)
 	router.DELETE(pathDeleteHotel, controllers.DeleteHotel)
 	//router.GET(pathGetHotel, controllers.GetHotels)
