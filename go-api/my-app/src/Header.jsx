@@ -11,7 +11,7 @@ function Header() {
         </a>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
           <li>
-            <a href="sass.html">Login</a>
+            <a href="/login">Login</a>
           </li>
           <li>
             <a href="badges.html">Register</a>

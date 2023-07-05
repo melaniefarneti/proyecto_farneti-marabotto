@@ -52,4 +52,5 @@ func mapRoutes(router *gin.Engine) {
 	router.GET(pathGetAvailableRoomsByHotelId, controllers.NewReservationController(clients.NewDBClient()).GetAvailableRoomsByHotelID)
 	router.POST(pathCreateAmenity, controllers.CreateAmenity)
 	router.POST(pathUploadPhoto, controllers.UploadHotelPhoto)
+
 }
