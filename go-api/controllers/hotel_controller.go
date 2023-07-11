@@ -97,16 +97,18 @@ func DeleteHotel(ctx *gin.Context) {
 }
 
 func UploadHotelPhoto(ctx *gin.Context) {
-	// Obtener los datos de la foto del cuerpo de la solicitud
-	var photoDTO dto.HotelPhoto
-	if err := ctx.ShouldBindJSON(&photoDTO); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid data"})
+	file, header, err := ctx.Request.FormFile("photo")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to read photo"})
 		return
 	}
+	defer file.Close()
 
-	// Verificar si algún campo requerido está en blanco
-	if photoDTO.HotelID == 0 || photoDTO.Filename == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "missing required data"})
+	// Obtener el ID del hotel del parámetro de la ruta
+	hotelIDStr := ctx.Param("hotelId")
+	hotelID, err := strconv.Atoi(hotelIDStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid hotel ID"})
 		return
 	}
 
@@ -114,7 +116,7 @@ func UploadHotelPhoto(ctx *gin.Context) {
 	hotelService := services.NewHotelService()
 
 	// Llamar al servicio para cargar la foto del hotel
-	err := hotelService.UploadHotelPhoto(photoDTO)
+	err = hotelService.UploadHotelPhoto(dto.HotelPhoto{HotelID: hotelID}, file, header)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "error uploading hotel photo"})
 		return

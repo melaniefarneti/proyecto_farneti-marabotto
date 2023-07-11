@@ -4,6 +4,14 @@ import (
 	"go-api/clients"
 	"go-api/dao"
 	"go-api/dto"
+
+	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
+
+	"github.com/google/uuid"
 )
 
 // HotelServiceInterface define la interfaz para el servicio de hoteles
@@ -57,15 +65,30 @@ func (s *HotelService) DeleteHotel(hotelID int) error {
 	return nil
 }
 
-func (s *HotelService) UploadHotelPhoto(photoDTO dto.HotelPhoto) error {
-	// Crear una instancia del DAO HotelPhoto
-	photo := dao.HotelPhoto{
-		HotelID:  photoDTO.HotelID,
-		Filename: photoDTO.Filename,
+func (s *HotelService) UploadHotelPhoto(photoDTO dto.HotelPhoto, file multipart.File, header *multipart.FileHeader) error {
+	// Generar un nombre único para el archivo
+	filename := fmt.Sprintf("%s%s", uuid.New().String(), filepath.Ext(header.Filename))
+
+	// Guardar el archivo en el sistema de archivos
+	destinationPath := filepath.Join("uploads", filename)
+	out, err := os.Create(destinationPath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return err
 	}
 
-	// Llamar al cliente de base de datos para crear la foto del hotel
-	err := s.DBClient.CreateHotelPhoto(&photo)
+	// Guardar el nombre del archivo en la base de datos junto con el ID del hotel
+	photo := dao.HotelPhoto{
+		HotelID:  photoDTO.HotelID,
+		Filename: filename,
+	}
+
+	err = s.DBClient.CreateHotelPhoto(&photo)
 	if err != nil {
 		return err
 	}

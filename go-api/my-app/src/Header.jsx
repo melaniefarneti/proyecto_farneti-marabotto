@@ -14,7 +14,7 @@ function Header() {
             <a href="/login">Login</a>
           </li>
           <li>
-            <a href="badges.html">Register</a>
+            <a href="/register">Register</a>
           </li>
         </ul>
       </div>

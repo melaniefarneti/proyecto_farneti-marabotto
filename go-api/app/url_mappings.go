@@ -14,11 +14,11 @@ const (
 	pathDeleteHotel = "/hotels/deletehotel/:hotelID"
 	//pathGetHotel          = "/hotels/:hotelID"
 
-	pathCreateReservation = "/reservations"
+	pathCreateReservation = "/reservations/:hotelID"
 	//pathGetAmenity     = "/amenities/:amenityID"
 	pathGetUserByID                = "/users/:userID"
 	pathGetUserByEmail             = "/users/emailuser/:email"
-	pathCreateUser                 = "/users/createuser"
+	pathCreateUser                 = "/register"
 	pathLoginAdmin                 = "/login/admin"
 	pathLogin                      = "/login"
 	pathGetReservation             = "/reservations/getreservations"

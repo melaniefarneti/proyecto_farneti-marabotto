@@ -29,7 +29,14 @@ function Login() {
 
       if (response.ok) {
         // Si la respuesta es exitosa, redirige al usuario a la página deseada
-        window.location.href = "/";
+        const userResponse = await fetch(`http://localhost:8080/users/emailuser/${email}`);
+        const user = await userResponse.json();
+
+        if (user.Role === "administrador") {
+          window.location.href = "/admin";
+        } else if (user.Role === "cliente") {
+          window.location.href = "/";
+        }
       } else {
         // Si la respuesta no es exitosa, muestra un mensaje de error
         setError("Error de inicio de sesión. Por favor, inténtalo de nuevo.");
@@ -60,4 +67,3 @@ function Login() {
 }
 
 export default Login;
-
