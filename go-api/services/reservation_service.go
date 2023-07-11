@@ -18,7 +18,7 @@ type ReservationService struct {
 	DBClient clients.DBClientInterface
 }
 
-func (s ReservationService) CreateReservation(hotelID int, checkin, checkout, clientName string) error {
+func (s ReservationService) CreateReservation(hotelID int, checkin, checkout, clientName string, userID int) error {
 	// Validar el formato de las fechas de check-in y check-out
 	_, err := time.Parse("2006-01-02", checkin)
 	if err != nil {
@@ -58,6 +58,7 @@ func (s ReservationService) CreateReservation(hotelID int, checkin, checkout, cl
 		CheckIn:    checkInDate.Format("2006-01-02"),
 		CheckOut:   checkOutDate.Format("2006-01-02"),
 		ClientName: clientName,
+		UserID:     userID,
 	}
 
 	// Realiza las operaciones necesarias para almacenar la reserva en la base de datos

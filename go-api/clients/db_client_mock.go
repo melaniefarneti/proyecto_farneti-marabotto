@@ -150,3 +150,17 @@ func (m *DBClientMock) GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error)
 	}
 	return nil, errors.New("not implemented")
 }
+
+func (m *DBClientMock) GetHotelPhotos(hotelID int) ([]dao.HotelPhoto, error) {
+	// Aquí puedes proporcionar la lógica de simulación para obtener las fotos del hotel
+	// según el ID del hotel.
+	// Por ejemplo, puedes devolver un conjunto de fotos predefinidas para el hotel con el ID proporcionado.
+
+	photos := []dao.HotelPhoto{
+		{HotelID: 1, Filename: "photo1.jpg"},
+		{HotelID: 1, Filename: "photo2.jpg"},
+		{HotelID: 1, Filename: "photo3.jpg"},
+	}
+
+	return photos, nil
+}

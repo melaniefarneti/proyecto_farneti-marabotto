@@ -31,6 +31,7 @@ type DBClientInterface interface {
 	CreateHotelPhoto(photo *dao.HotelPhoto) error
 
 	GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error)
+	GetHotelPhotos(hotelID int) ([]dao.HotelPhoto, error)
 }
 
 type DBClient struct {
@@ -242,4 +243,13 @@ func (c DBClient) GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error) {
 		return nil, err
 	}
 	return amenities, nil
+}
+
+func (c DBClient) GetHotelPhotos(hotelID int) ([]dao.HotelPhoto, error) {
+	var photos []dao.HotelPhoto
+	err := c.DB.Model(&dao.HotelPhoto{}).Where("hotel_id = ?", hotelID).Find(&photos).Error
+	if err != nil {
+		return nil, err
+	}
+	return photos, nil
 }

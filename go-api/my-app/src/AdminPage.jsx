@@ -20,6 +20,13 @@ function AdminPage() {
 
   return (
     <div>
+      <div>
+      <a href="/information" style={{ textDecoration: "none" }}>
+          <button>
+            Ver listado de reservas
+          </button>
+        </a>
+      </div>
       <div className="card-container">
         {hotels.map((hotel) => (
           <HotelCardAdmin key={hotel.ID} hotel={hotel} />

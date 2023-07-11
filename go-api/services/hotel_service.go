@@ -95,3 +95,13 @@ func (s *HotelService) UploadHotelPhoto(photoDTO dto.HotelPhoto, file multipart.
 
 	return nil
 }
+
+func (s *HotelService) GetHotelPhotos(hotelID int) ([]dao.HotelPhoto, error) {
+	// Llamar al cliente de base de datos para obtener las fotos del hotel
+	photos, err := s.DBClient.GetHotelPhotos(hotelID)
+	if err != nil {
+		return nil, err
+	}
+
+	return photos, nil
+}

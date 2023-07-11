@@ -9,6 +9,7 @@ import ReservationPage from "./ReservationPage";
 import Register from "./Register";
 import AdminPage from "./AdminPage";
 import ModificarHotel from "./ModificarHotel";
+import InformationPage from "./InformationPage";
 
 function App() {
   const [hotels, setHotels] = useState([]);
@@ -39,6 +40,7 @@ function App() {
         <Register path="/register"/>
         <AdminPage path="/admin"/>
         <ModificarHotel path="/modificarhotel/:hotelId"/>
+        <InformationPage path="/information"/>
       </Router>
       <Footer />
     </>

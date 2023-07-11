@@ -124,3 +124,32 @@ func UploadHotelPhoto(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "hotel photo uploaded"})
 }
+
+func GetHotelPhotos(ctx *gin.Context) {
+	hotelIDStr := ctx.Param("hotelID")
+
+	// Convertir hotelIDStr a un valor entero
+	hotelID, err := strconv.Atoi(hotelIDStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid hotel ID",
+		})
+		return
+	}
+
+	hotelService := services.NewHotelService()
+	photos, err := hotelService.GetHotelPhotos(hotelID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error getting hotel photos",
+		})
+		return
+	}
+
+	baseURL := "./uploads/" // Ruta relativa a la carpeta "uploads"
+	for i := range photos {
+		photos[i].Filename = baseURL + photos[i].Filename
+	}
+
+	ctx.JSON(http.StatusOK, photos)
+}

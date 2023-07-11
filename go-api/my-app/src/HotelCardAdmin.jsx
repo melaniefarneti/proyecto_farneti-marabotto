@@ -4,6 +4,8 @@ function HotelCardAdmin({ hotel }) {
   const [activeTab, setActiveTab] = useState(0);
   const [amenities, setAmenities] = useState([]);
   const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
+  const [photos, setPhotos] = useState([]);
+  const [photosLoaded, setPhotosLoaded] = useState(false);
 
   const cardStyle = {
     backgroundColor: "black",
@@ -81,11 +83,28 @@ function HotelCardAdmin({ hotel }) {
     }
   };
 
+  const fetchHotelPhotos = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/gethotelphoto/${hotel.ID}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPhotos(data);
+        setPhotosLoaded(true);
+      } else {
+        throw new Error("Request failed with status code " + response.status);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 1 && !amenitiesLoaded) {
       fetchAmenities();
+    } else if (activeTab === 2 && !photosLoaded) {
+      fetchHotelPhotos();
     }
-  }, [activeTab, amenitiesLoaded]);
+  }, [activeTab, amenitiesLoaded, photosLoaded]);
 
   return (
     <div className="col s12 m6 l4">
@@ -127,11 +146,21 @@ function HotelCardAdmin({ hotel }) {
                     <p key={amenity.ID}>{amenity.Nombre}</p>
                   ))
                 ) : (
-                  <p>Cargando amenidades...</p>
+                  <p className="loader">Cargando amenidades...</p>
                 )}
               </div>
             )}
-            {activeTab === 2 && <p>Fotos Cargadas</p>}
+            {activeTab === 2 && (
+              <div>
+                {photosLoaded ? (
+                  photos.map((photo) => (
+                    <img key={photo.ID} src={photo.URL} alt="Hotel Photo" />
+                  ))
+                ) : (
+                  <p className="loader">Cargando fotos...</p>
+                )}
+              </div>
+            )}
             <button onClick={handleReservarClick} style={buttonStyle}>
               Reservar
             </button>
