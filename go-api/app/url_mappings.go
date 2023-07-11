@@ -27,6 +27,7 @@ const (
 	pathGetAvailableRoomsByHotelId = "/availablerooms/:hotelID/:checkin/:checkout"
 	pathCreateAmenity              = "/amenities"
 	pathUploadPhoto                = "/hotels/uploadphoto/:hotelID"
+	pathGetAmenityByHotelId        = "/getamenities/:hotelID"
 )
 
 // mapRoutes mapea las rutas de la aplicación
@@ -53,4 +54,5 @@ func mapRoutes(router *gin.Engine) {
 	router.POST(pathCreateAmenity, controllers.CreateAmenity)
 	router.POST(pathUploadPhoto, controllers.UploadHotelPhoto)
 
+	router.GET(pathGetAmenityByHotelId, controllers.GetAmenityByHotelID)
 }

@@ -105,7 +105,7 @@ func UploadHotelPhoto(ctx *gin.Context) {
 	defer file.Close()
 
 	// Obtener el ID del hotel del parámetro de la ruta
-	hotelIDStr := ctx.Param("hotelId")
+	hotelIDStr := ctx.Param("hotelID")
 	hotelID, err := strconv.Atoi(hotelIDStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid hotel ID"})

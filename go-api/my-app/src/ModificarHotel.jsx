@@ -47,19 +47,16 @@ function ModificarHotel({ hotelId }) {
 
   const handlePhotoSubmit = async (event) => {
     event.preventDefault();
-
+  
     // Realizar la llamada al endpoint para cargar la foto
     try {
       const formData = new FormData();
       formData.append("hotel_id", hotelId);
       formData.append("photo", photo);
-
+  
       await fetch(`http://localhost:8080/hotels/uploadphoto/${hotelId}`, {
         method: "POST",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data" // Agregar este encabezado
-        }
       });
       setSuccessMessage("La foto se cargó exitosamente.");
     } catch (error) {
@@ -67,6 +64,8 @@ function ModificarHotel({ hotelId }) {
       setErrorMessage("Error al cargar la foto. Por favor, inténtalo de nuevo.");
     }
   };
+  
+  
 
   return (
     <div>

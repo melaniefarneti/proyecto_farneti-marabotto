@@ -5,6 +5,7 @@ import (
 	"go-api/dto"
 	"go-api/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,4 +48,31 @@ func CreateAmenity(ctx *gin.Context) {
 
 	// Retornar el objeto creado como respuesta
 	ctx.JSON(http.StatusOK, amenity)
+}
+
+func GetAmenityByHotelID(ctx *gin.Context) {
+	hotelIDStr := ctx.Param("hotelID")
+
+	// Convertir hotelIDStr a un valor entero
+	hotelID, err := strconv.ParseInt(hotelIDStr, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid hotel ID",
+		})
+		return
+	}
+
+	// Crear una instancia del servicio de amenidades
+	amenityService := services.NewAmenityService()
+
+	// Llamar al servicio para obtener las amenidades por ID de hotel
+	amenities, err := amenityService.GetAmenityByHotelID(hotelID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error getting amenities",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, amenities)
 }

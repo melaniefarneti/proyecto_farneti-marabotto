@@ -18,6 +18,7 @@ type DBClientMock struct {
 	GetReservationsByHotelIDFunc          func(hotelID int) ([]*dao.Reservation, error)
 	GetReservedRoomsByHotelIDAndDatesFunc func(hotelID int, checkin, checkout string) (int, error)
 	CreateAmenityFunc                     func(amenity *dao.Amenity) error
+	GetAmenityByHotelIDFunc               func(hotelID int64) ([]dao.Amenity, error)
 }
 
 func (DBClientMock) CreateReservation(reservation dao.Reservation) error {
@@ -141,4 +142,11 @@ func (DBClientMock) CreateHotelPhoto(photo *dao.HotelPhoto) error {
 	fmt.Printf("Creando foto para el ID del hotel %d\n", photo.HotelID)
 	fmt.Println("Foto creada exitosamente")
 	return nil
+}
+
+func (m *DBClientMock) GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error) {
+	if m.GetAmenityByHotelIDFunc != nil {
+		return m.GetAmenityByHotelIDFunc(hotelID)
+	}
+	return nil, errors.New("not implemented")
 }

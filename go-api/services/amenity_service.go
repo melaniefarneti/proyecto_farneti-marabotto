@@ -8,6 +8,7 @@ import (
 // AmenityServiceInterface define la interfaz para el servicio de amenities
 type AmenityServiceInterface interface {
 	CreateAmenity(amenity *dao.Amenity) error
+	GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error)
 }
 
 // AmenityService es una implementación del servicio de amenities
@@ -31,4 +32,15 @@ func (s *AmenityService) CreateAmenity(amenity *dao.Amenity) error {
 	}
 
 	return nil
+}
+
+// GetAmenityByHotelID obtiene las amenidades por ID de hotel
+func (s *AmenityService) GetAmenityByHotelID(hotelID int64) ([]dao.Amenity, error) {
+	// Llamar al cliente de base de datos para obtener las amenidades por ID de hotel
+	amenities, err := s.DBClient.GetAmenityByHotelID(hotelID)
+	if err != nil {
+		return nil, err
+	}
+
+	return amenities, nil
 }
