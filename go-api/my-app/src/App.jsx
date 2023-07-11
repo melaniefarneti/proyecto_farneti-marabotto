@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Login from "./Login";
 import './Styles.css';
+import ReservationPage from "./ReservationPage";
 
 function App() {
   const [hotels, setHotels] = useState([]);
@@ -31,6 +32,7 @@ function App() {
       <Router>
         <Home path="/" hotels={hotels} />
         <Login path="/login" />
+        <ReservationPage path="/reservations/:hotelId"/>
       </Router>
       <Footer />
     </>

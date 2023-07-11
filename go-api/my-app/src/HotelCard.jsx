@@ -31,6 +31,11 @@ function HotelCard({ hotel }) {
     padding: "8px"
   };
 
+  const handleReservarClick = () => {
+    // Redirigir a la página de reservas del hotel
+    window.location.href = `/reservations/${hotel.ID}`;
+  };
+
   return (
     <div className="col s12 m6 l4">
       <div className="card" style={cardStyle}>
@@ -44,7 +49,7 @@ function HotelCard({ hotel }) {
           </div>
         </div>
         <div className="card-action">
-          <a href="#">Reservar</a>
+          <button onClick={handleReservarClick}>Reservar</button>
         </div>
       </div>
     </div>
