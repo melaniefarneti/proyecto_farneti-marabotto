@@ -29,7 +29,7 @@ function Login() {
 
       if (response.ok) {
         // Si la respuesta es exitosa, redirige al usuario a la página deseada
-        window.location.href = "/dashboard";
+        window.location.href = "/";
       } else {
         // Si la respuesta no es exitosa, muestra un mensaje de error
         setError("Error de inicio de sesión. Por favor, inténtalo de nuevo.");
@@ -41,9 +41,9 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h1>Iniciar sesión</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
           <input type="email" value={email} onChange={handleEmailChange} />
@@ -52,7 +52,7 @@ function Login() {
           <label>Contraseña:</label>
           <input type="password" value={contrasena} onChange={handleContrasenaChange} />
         </div>
-        {error && <p>{error}</p>}
+        {error && <p className="login-error">{error}</p>}
         <button type="submit">Iniciar sesión</button>
       </form>
     </div>

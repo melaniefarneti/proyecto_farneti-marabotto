@@ -22,6 +22,8 @@ func GetHotels(ctx *gin.Context) {
 		return
 	}
 
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
 	ctx.JSON(http.StatusOK, hotels)
 }
 

@@ -5,7 +5,7 @@ function Header() {
   return (
     <nav>
       <div className="nav-wrapper">
-        <a href="#" className="brand-logo">
+        <a href="/" className="brand-logo">
           <img src={logo} alt="Logo" className="logo" />
           <span className="brand-text">HiHotel!</span>
         </a>
