@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"encoding/base64"
+	"fmt"
 	"go-api/dao"
 	"go-api/dto"
 	"go-api/services"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -148,7 +151,20 @@ func GetHotelPhotos(ctx *gin.Context) {
 
 	baseURL := "./uploads/" // Ruta relativa a la carpeta "uploads"
 	for i := range photos {
-		photos[i].Filename = baseURL + photos[i].Filename
+		uri := baseURL + photos[i].Filename
+		bytes, err := ioutil.ReadFile(uri)
+		if err != nil {
+			ctx.Status(500)
+			return
+		}
+		var imgData string
+		mType := http.DetectContentType(bytes)
+		if mType == "image/jpeg" {
+			imgData = imgData + "data:image/jpeg;base64,"
+		}
+		imgDataBase64 := base64.StdEncoding.EncodeToString(bytes)
+		photos[i].Filename = imgData + imgDataBase64
+		fmt.Println(photos[i].Filename)
 	}
 
 	ctx.JSON(http.StatusOK, photos)
