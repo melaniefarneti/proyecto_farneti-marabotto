@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Router } from "@reach/router";
-import Home from "./Home";
+import Home from "../../mi-app/src/Home";
 import Header from "./Header";
 import Footer from "./Footer";
 import Login from "./Login";

@@ -4,7 +4,7 @@ import './styles.css'; // Asegúrate de importar tu archivo de estilos
 
 const headerStyles = {
   backgroundColor: 'black',
-  padding: '10px 0',
+  padding: '10px',
   width: '100%',
   position: 'fixed',
   top: 0,
@@ -12,36 +12,35 @@ const headerStyles = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
+  flexWrap: 'wrap', // Permite que los elementos se envuelvan si es necesario
+  boxSizing: 'border-box', // Incluye padding en el ancho total
 };
 
 const logoStyles = {
-  maxWidth: '120px',
-  display: 'block',
-  margin: '0 auto',
+  maxWidth: '120px', // Logotipo ajustará automáticamente su ancho
+  height: 'auto', // Mantendrá la relación de aspecto
+  margin: '0 auto', // Centra horizontalmente
 };
 
 const buttonContainerStyles = {
   display: 'flex',
+  alignItems: 'center', // Centra verticalmente los botones
+  gap: '10px', // Espacio entre los botones
 };
 
 const buttonStyles = {
-  display: 'inline-block',
   padding: '5px 10px',
-  backgroundColor: 'black',
   color: 'white',
+  fontWeight: 'bold',
   textDecoration: 'none',
   borderRadius: '20px',
   transition: 'background-color 0.3s',
-  margin: '0 5px',
-  border: '1.8px solid white',
-}
+};
 
 function Header() {
   return (
     <header style={headerStyles}>
-      <div>
-        <a href="/"><img src={logo} alt="Logo" style={logoStyles} /></a>
-      </div>
+      <a href="/"><img src={logo} alt="Logo" style={logoStyles} /></a>
       <div className="buttons" style={buttonContainerStyles}>
         <a href="/login" className="button" style={buttonStyles}>Login</a>
         <a href="/register" className="button" style={buttonStyles}>Register</a>

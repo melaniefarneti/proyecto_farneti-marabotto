@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import HotelCard from "./HotelCard";
 
+const containerStyle = {
+  marginTop: "200px", // Ajusta esta altura según tus necesidades
+};
+
 function Home() {
   const [hotels, setHotels] = useState([]);
 
@@ -19,8 +23,8 @@ function Home() {
   }, []);
 
   return (
-    <div>
-      <div>
+    <div style={containerStyle}>
+      <div className="card-container">
         {hotels.map((hotel) => (
           <HotelCard key={hotel.ID} hotel={hotel} />
         ))}

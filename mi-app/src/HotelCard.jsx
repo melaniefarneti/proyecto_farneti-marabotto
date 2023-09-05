@@ -1,5 +1,80 @@
 import React, { useState, useEffect } from "react";
 
+const cardStyle = {
+  backgroundColor: "black",
+  width: "250px",
+  margin: "10px",
+  color: "white",
+  marginRight: "10px",
+  marginLeft: "10px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center", // Centra horizontalmente
+};
+
+const imageStyle = {
+  width: "100%", // Ajusta el ancho al 100%
+  maxHeight: "200px",
+  objectFit: "cover",
+  marginBottom: "8px",
+};
+
+const titleStyle = {
+  padding: "8px",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  fontWeight: "bold",
+  fontFamily: "inherit",
+  textAlign: "center",
+  margin: 0,
+  fontSize: "24px",
+};
+
+const contentStyle = {
+  padding: "8px",
+  textAlign: "center", // Centra horizontalmente el contenido
+};
+
+const buttonContainerStyle = {
+  padding: "10px",
+  display: "flex",
+  justifyContent: "center", // Centra horizontalmente
+};
+
+const buttonStyle = {
+  fontSize: "13px",
+  marginTop: "15px",
+  alignItems: "center",
+};
+
+function HotelCard({ hotel }) {
+  const handleReservarClick = () => {
+    // Redirigir a la página de reservas del hotel
+    window.location.href = `/reservations/${hotel.ID}`;
+  };
+
+  return (
+    <div style={cardStyle}>
+      <img src={hotel.Photo} alt="Hotel" style={imageStyle} />
+      <div>
+        <div style={titleStyle}>{hotel.Name}</div>
+        <div style={contentStyle}>
+          <p>{hotel.Description}</p>
+        </div>
+        <div style={buttonContainerStyle}>
+        <button onClick={handleReservarClick} style={buttonStyle}>
+          Ver mas
+        </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default HotelCard;
+
+
+/*import React, { useState, useEffect } from "react";
+
 function HotelCard({ hotel }) {
   const [activeTab, setActiveTab] = useState(0);
   const [amenities, setAmenities] = useState([]);
@@ -63,46 +138,8 @@ function HotelCard({ hotel }) {
     window.location.href = `/reservations/${hotel.ID}`;
   };
 
-  const fetchAmenities = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/getamenities/${hotel.ID}`);
-      if (response.ok) {
-        const data = await response.json();
-        setAmenities(data);
-        setAmenitiesLoaded(true);
-      } else {
-        throw new Error("Request failed with status code " + response.status);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchHotelPhotos = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/gethotelphoto/${hotel.ID}`);
-      if (response.ok) {
-        const data = await response.json();
-        setPhotos(data);
-        setPhotosLoaded(true);
-      } else {
-        throw new Error("Request failed with status code " + response.status);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 1 && !amenitiesLoaded) {
-      fetchAmenities();
-    } else if (activeTab === 2 && !photosLoaded) {
-      fetchHotelPhotos();
-    }
-  }, [activeTab, amenitiesLoaded, photosLoaded]);
-
   return (
-    <div>
+
       <div style={cardStyle}>
         <div>
           <img src={hotel.Photo} alt="Hotel" style={imageStyle} />
@@ -110,57 +147,11 @@ function HotelCard({ hotel }) {
         <div>
           <div style={titleStyle}>{hotel.Name}</div>
           <div style={contentStyle}>
-            <div style={tabStyle}>
-              <button
-                onClick={() => handleTabClick(0)}
-                className={activeTab === 0 ? "active" : ""}
-                style={tabButtonStyle}
-              >
-                Descripción
-              </button>
-              <button
-                onClick={() => handleTabClick(1)}
-                className={activeTab === 1 ? "active" : ""}
-                style={tabButtonStyle}
-              >
-                Amenidades
-              </button>
-              <button
-                onClick={() => handleTabClick(2)}
-                className={activeTab === 2 ? "active" : ""}
-                style={tabButtonStyle}
-              >
-                Fotos Cargadas
-              </button>
-            </div>
-            {activeTab === 0 && <p>{hotel.Description}</p>}
-            {activeTab === 1 && (
-              <div>
-                {amenitiesLoaded ? (
-                  amenities.map((amenity) => (
-                    <p key={amenity.ID}>{amenity.Nombre}</p>
-                  ))
-                ) : (
-                  <p className="loader">Cargando amenidades...</p>
-                )}
-              </div>
-            )}
-            {activeTab === 2 && (
-              <div>
-                {photosLoaded ? (
-                  photos.map((photo) => (
-                    <img key={photo.ID} src={`${photo.Filename}`} alt="Hotel Photo" />
-                  ))
-                ) : (
-                  <p >Cargando fotos...</p>
-                )}
-              </div>
-            )}
-          </div>
+            <div style={tabStyle}><p>{hotel.Description}</p></div>
         </div>
         <div>
           <button onClick={handleReservarClick} style={buttonStyle}>
-            Reservar
+            Ver mas
           </button>
         </div>
       </div>
@@ -168,4 +159,4 @@ function HotelCard({ hotel }) {
   );
 }
 
-export default HotelCard;
+export default HotelCard;*/
