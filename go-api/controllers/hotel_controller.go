@@ -169,3 +169,32 @@ func GetHotelPhotos(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, photos)
 }
+
+func GetHotelByID(ctx *gin.Context) {
+	hotelIDStr := ctx.Param("hotelID")
+	hotelID, err := strconv.Atoi(hotelIDStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid hotel ID",
+		})
+		return
+	}
+
+	hotelService := services.NewHotelService()
+	hotel, err := hotelService.GetHotelByID(hotelID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "error getting hotel by ID",
+		})
+		return
+	}
+
+	if hotel == nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "hotel not found",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, hotel)
+}

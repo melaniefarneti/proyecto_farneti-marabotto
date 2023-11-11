@@ -1,4 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Importa Routes
+import Home from "./Home";
+import { Header } from "./Header";
+import HotelDetailPage from "./HotelDetailPage";
+import Login from "./LoginPage";
+import Register from "./RegisterPage";
+import AdminPage from "./AdminPage";
+import ReservationPage from "./ReservationPage";
+import ModificarHotel from "./ModificarHotel";
+
+
+function App() {
+  return (
+    <>
+      <div>
+        <Header />
+      </div>
+      <Router>
+        <Routes> {/* Usa Routes para envolver tus rutas */}
+          <Route path="/" element={<Home />} />
+          <Route path="/hotels/:hotelId" element={<HotelDetailPage />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="admin" element={<AdminPage/>} />
+          <Route path='reservations/:hotelId' element={<ReservationPage/>}/>
+          <Route path="/modificarhotel/:hotelId" element={<ModificarHotel/>}/>
+        </Routes>
+      </Router>
+    </>
+  );
+}
+
+export default App;
+
+
+/*import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router} from 'react-router-dom';
 import Home from './Home';
 import {Header} from "./Header";
@@ -18,4 +54,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;*/

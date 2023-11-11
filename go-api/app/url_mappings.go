@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	pathGetHotels   = "/hotels/gethotels"
-	pathCreateHotel = "/hotels/createhotel"
-	pathDeleteHotel = "/hotels/deletehotel/:hotelID"
-	//pathGetHotel          = "/hotels/:hotelID"
+	pathGetHotels    = "/hotels/gethotels"
+	pathCreateHotel  = "/hotels/createhotel"
+	pathDeleteHotel  = "/hotels/deletehotel/:hotelID"
+	pathGetHotelByID = "/hotels/:hotelID"
 
 	pathCreateReservation = "/reservations/:hotelID"
 	//pathGetAmenity     = "/amenities/:amenityID"
@@ -36,7 +36,7 @@ func mapRoutes(router *gin.Engine) {
 	router.GET(pathGetHotels, func(ctx *gin.Context) { controllers.GetHotels(ctx) })
 	router.POST(pathCreateHotel, controllers.CreateHotel)
 	router.DELETE(pathDeleteHotel, controllers.DeleteHotel)
-	//router.GET(pathGetHotel, controllers.GetHotels)
+	router.GET(pathGetHotelByID, controllers.GetHotelByID)
 	router.POST(pathCreateReservation, controllers.NewReservationController(clients.NewDBClient()).CreateReservation)
 	//router.GET(pathGetAmenity, controllers.GetAmenity)
 	router.GET(pathGetUserByID, controllers.NewUserController(services.NewUserService(clients.NewDBClient())).GetUserByID)

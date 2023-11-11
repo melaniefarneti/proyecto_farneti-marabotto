@@ -19,6 +19,7 @@ type HotelServiceInterface interface {
 	GetHotels() ([]dao.Hotel, error)
 	CreateHotel(hotel *dao.Hotel) (*dao.Hotel, error)
 	DeleteHotel(hotelID int) error
+	GetHotelByID(hotelID int) (*dao.Hotel, error)
 }
 
 // HotelService es una implementación del servicio de hoteles
@@ -104,4 +105,14 @@ func (s *HotelService) GetHotelPhotos(hotelID int) ([]dao.HotelPhoto, error) {
 	}
 
 	return photos, nil
+}
+
+func (s *HotelService) GetHotelByID(hotelID int) (*dao.Hotel, error) {
+	// Llamar al cliente de base de datos para obtener el hotel por su ID
+	hotel, err := s.DBClient.GetHotelByID(hotelID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &hotel, nil
 }
