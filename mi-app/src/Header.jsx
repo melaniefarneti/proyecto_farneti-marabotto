@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from "./logo.png";
-import './styles.css'; // Asegúrate de importar tu archivo de estilos
+import './Styles.css'; // Asegúrate de importar tu archivo de estilos
 
 const headerStyles = {
   backgroundColor: 'black',

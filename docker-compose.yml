@@ -1,30 +1,26 @@
 version: '3'
 services:
-  backend:
-    image: img-backend
-    ports:
-      - "8080:8080"
-    container_name: cnt-backend
-    environment:
-      - DB_HOST=database
-      - FRONTEND_URL=http://frontend:5173
-    depends_on:
-      - database
-
-  frontend:
-    image: img-frontend
-    container_name: cnt-frontend
-    environment:
-      NODE_ENV: "development"
-    ports:
-      - "5173:5173"
-
   database:
-    image: "mysql:latest"
+    image: mysql:latest
+    container_name: cnt-database
     ports:
       - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: mel1
       MYSQL_DATABASE: proyectohotel
 
+  backend:
+    image: img-backend:0.0.1
+    container_name: cnt-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
 
+  frontend:
+    image: img-frontend:0.0.1
+    container_name: cnt-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

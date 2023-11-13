@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import './styles.css';
+import './Styles.css';
 
 function ReservationPage() {
   const { hotelId } = useParams();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "./styles.css";
+import "./Styles.css";
 
 function HotelDetailPage() {
   const { hotelId } = useParams(); // Usar useParams para obtener el hotelId de la URL
