@@ -5,6 +5,21 @@ const containerStyle = {
   marginTop: "200px", // Ajusta esta altura según tus necesidades
 };
 
+const buttonContainerStyles = {
+  display: 'flex',
+  alignItems: 'center', // Centra verticalmente los botones
+  gap: '10px', // Espacio entre los botones
+};
+
+const buttonStyles = {
+  padding: '5px 10px',
+  color: 'white',
+  fontWeight: 'bold',
+  textDecoration: 'none',
+  borderRadius: '20px',
+  transition: 'background-color 0.3s',
+};
+
 function Home() {
   const [hotels, setHotels] = useState([]);
 

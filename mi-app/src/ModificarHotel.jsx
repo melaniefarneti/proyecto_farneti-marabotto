@@ -68,14 +68,14 @@ function ModificarHotel() {
   };
 
   return (
-    <div>
+    <div className="modify-hotel-container">
       <h2>Modificar Hotel</h2>
-      {successMessage && <p>{successMessage}</p>}
-      {errorMessage && <p>{errorMessage}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      <form onSubmit={handleAmenitySubmit}>
+      <form onSubmit={handleAmenitySubmit} className="form-container">
         <h3>Cargar Amenities</h3>
-        <div>
+        <div className="form-group">
           <label htmlFor="amenity">Nombre del amenity:</label>
           <input
             type="text"
@@ -84,12 +84,12 @@ function ModificarHotel() {
             onChange={handleAmenityChange}
           />
         </div>
-        <button type="submit">Cargar Amenity</button>
+        <button type="submit" className="submit-button">Cargar Amenity</button>
       </form>
 
-      <form onSubmit={handlePhotoSubmit}>
+      <form onSubmit={handlePhotoSubmit} className="form-container">
         <h3>Cargar Fotos</h3>
-        <div>
+        <div className="form-group">
           <label htmlFor="photo">Seleccione una foto:</label>
           <input
             type="file"
@@ -97,7 +97,7 @@ function ModificarHotel() {
             onChange={handlePhotoChange}
           />
         </div>
-        <button type="submit">Cargar Foto</button>
+        <button type="submit" className="submit-button">Cargar Foto</button>
       </form>
     </div>
   );

@@ -18,16 +18,18 @@ function AdminPage() {
     fetchHotels();
   }, []);
 
+  const handleNavigateToInformationPage = () => {
+    window.location.href = "/information";
+  };
+
   return (
     <div>
-      <div>
-      <a href="/information" style={{ textDecoration: "none" }}>
-          <button>
-            Ver listado de reservas
-          </button>
-        </a>
+      <div style={{ color: "pink", marginTop: "150px" }}>
+        <button onClick={handleNavigateToInformationPage}>
+          Ver listado de reservas
+        </button>
       </div>
-      <div style={{ margin: "200px" }}></div>
+      <div style={{ margin: "70px" }}></div>
       <div className="card-container">
         {hotels.map((hotel) => (
           <HotelCardAdmin key={hotel.ID} hotel={hotel} />

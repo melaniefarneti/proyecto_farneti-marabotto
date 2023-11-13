@@ -8,6 +8,7 @@ import Register from "./RegisterPage";
 import AdminPage from "./AdminPage";
 import ReservationPage from "./ReservationPage";
 import ModificarHotel from "./ModificarHotel";
+import InformationPage from "./InformationPage";
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
         <Header />
       </div>
       <Router>
-        <Routes> {/* Usa Routes para envolver tus rutas */}
+        <Routes> 
           <Route path="/" element={<Home />} />
           <Route path="/hotels/:hotelId" element={<HotelDetailPage />} />
           <Route path="login" element={<Login />} />
@@ -25,6 +26,7 @@ function App() {
           <Route path="admin" element={<AdminPage/>} />
           <Route path='reservations/:hotelId' element={<ReservationPage/>}/>
           <Route path="/modificarhotel/:hotelId" element={<ModificarHotel/>}/>
+          <Route path="/information" element={<InformationPage/>}/>
         </Routes>
       </Router>
     </>
