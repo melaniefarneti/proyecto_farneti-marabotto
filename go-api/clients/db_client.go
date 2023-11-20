@@ -40,9 +40,9 @@ type DBClient struct {
 
 func NewDBClient() DBClient {
 	// Configura la conexión a la base de datos
-	//dsn := "root:mel1@tcp(localhost:3306)/proyectohotel?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:mel1@tcp(localhost:3306)/proyectohotel?charset=utf8mb4&parseTime=True&loc=Local"
 
-	dsn := "root:mel1@tcp(cnt-database:3306)/proyectohotel?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "root:mel1@tcp(cnt-database:3306)/proyectohotel?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
